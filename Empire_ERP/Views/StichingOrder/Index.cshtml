@@ -1,0 +1,347 @@
+<style>
+    .stiching-section {
+        margin-bottom: 16px;
+        border: 1px solid #cfcfcf;
+        box-shadow: 0px 5px 11px 0px rgb(51 51 51 / 8%);
+        background-color: #fff;
+    }
+
+        .stiching-section > .card-header {
+            padding-top: 8px;
+            padding-bottom: 8px;
+            background-color: #f5f7fa;
+            border-bottom: 1px solid #dcdcdc;
+        }
+
+        .stiching-section .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--theme-blue);
+            margin-bottom: 0;
+        }
+
+        .stiching-section .card-body {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .stiching-section .form-label {
+            margin-bottom: 4px;
+        }
+
+        .stiching-section .form-control {
+            margin-bottom: 8px;
+        }
+
+        .stiching-section .dx-dropdowneditor {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+    .stiching-serial-group {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+        .stiching-serial-group .form-control {
+            margin-bottom: 0;
+        }
+
+        .stiching-serial-group .btn {
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+    .stiching-option-group .form-check {
+        margin-right: 14px;
+        margin-bottom: 6px;
+        margin-top: 2px;
+    }
+
+    .stiching-option-group .form-check-label {
+        padding-top: 1px;
+    }
+
+    @@media (max-width: 575.98px) {
+        .stiching-section {
+            margin-bottom: 12px;
+        }
+
+        .stiching-header-actions #BtnNew {
+            float: none;
+            margin-top: 6px;
+        }
+
+        .stiching-actions {
+            text-align: right;
+        }
+
+            .stiching-actions .btn {
+                margin-bottom: 6px;
+            }
+    }
+</style>
+<div class="card">
+    <div class="card-header stiching-header-actions">
+        <button type="button" class="btn btn-light btn-search waves-effect waves-light" data-bs-toggle="modal"
+                data-bs-target=".bs-example-modal-xl" id="BtnQuickSearch">
+            <i class="fa fa-search"></i> Quick Search
+        </button>
+        <button type="button" class="btn btn-primary btn-new waves-effect waves-light float-end" id="BtnNew">
+            <i class="fa fa-plus"></i> Add New
+        </button>
+    </div>
+    <div class="card-body Record">
+        <div class="card stiching-section">
+            <div class="card-header">
+                <h6 class="card-title">Customer</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <input type="hidden" id="ORDER_ID" />
+                    <div class="col-xl-3 col-lg-4 col-md-5 col-sm-6 col-12">
+                        <label class="form-label" for="ID">Serial No.:</label>
+                        <div class="stiching-serial-group">
+                            <input class="form-control" id="ID" type="text" autocomplete="off">
+                            <button type="button" class="btn btn-primary btn-save" id="BtnEnter">Enter</button>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-7 col-sm-6 col-12">
+                        <label class="form-label" for="CONTACT_NO">Contact Number:</label>
+                        <div class="stiching-serial-group">
+                            <input class="form-control ContactNo" id="CONTACT_NO" type="text" autocomplete="off">
+                            <button type="button" class="btn btn-primary btn-save" id="BtnEnterContact">Enter</button>
+                        </div>
+                    </div>
+                    <div class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12">
+                        <label class="form-label" for="FULL_NAME">Customer Name:</label>
+                        <input class="form-control" id="FULL_NAME" type="text" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card stiching-section">
+            <div class="card-header">
+                <h6 class="card-title">Suit & Measurements</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="SUIT_TYPE">Suit Type:</label>
+                        <div id="SUIT_TYPE"></div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="KURTA_LENGTH">Kurta Length:</label>
+                        <input class="form-control" id="KURTA_LENGTH" type="number" step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="SHOULDER">Shoulder:</label>
+                        <input class="form-control" id="SHOULDER" type="number" step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="SLEEVES">Sleeves:</label>
+                        <input class="form-control" id="SLEEVES" type="number" step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="CHEST">Chest:</label>
+                        <input class="form-control" id="CHEST" type="number" step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="WAIST">Waist:</label>
+                        <input class="form-control" id="WAIST" type="number" step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="COLLAR_SIZE">Collar Size:</label>
+                        <input class="form-control" id="COLLAR_SIZE" type="number" step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="ARMHOLE">Armhole:</label>
+                        <input class="form-control" id="ARMHOLE" type="number" step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="CUFF_MORI">Cuff / Mori:</label>
+                        <input class="form-control" id="CUFF_MORI" type="number" step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card stiching-section">
+            <div class="card-header">
+                <h6 class="card-title">Bottom Measurements</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <label class="form-label">Bottom Type:</label>
+                        <div class="d-flex flex-wrap stiching-option-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="BOTTOM_TYPE" id="BOTTOM_TYPE_Shalwar" value="Shalwar">
+                                <label class="form-check-label" for="BOTTOM_TYPE_Shalwar">Shalwar</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="BOTTOM_TYPE" id="BOTTOM_TYPE_Pajama" value="Pajama">
+                                <label class="form-check-label" for="BOTTOM_TYPE_Pajama">Pajama</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="BOTTOM_TYPE" id="BOTTOM_TYPE_Trouser" value="Trouser">
+                                <label class="form-check-label" for="BOTTOM_TYPE_Trouser">Trouser</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="BOTTOM_LENGTH">Bottom Length:</label>
+                        <input class="form-control" id="BOTTOM_LENGTH" type="number" step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="PANCHA">Pancha:</label>
+                        <input class="form-control" id="PANCHA" type="number" step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-12">
+                        <label class="form-label" for="ASAN_GHERA">Asan Ghera:</label>
+                        <input class="form-control" id="ASAN_GHERA" type="number" step="0.01" inputmode="decimal" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card stiching-section">
+            <div class="card-header">
+                <h6 class="card-title">Design Details</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                        <label class="form-label">Daman Style:</label>
+                        <div class="d-flex flex-wrap stiching-option-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="DAMAN_STYLE" id="DAMAN_STYLE_Gol" value="Gol">
+                                <label class="form-check-label" for="DAMAN_STYLE_Gol">Gol</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="DAMAN_STYLE" id="DAMAN_STYLE_Chauras" value="Chauras">
+                                <label class="form-check-label" for="DAMAN_STYLE_Chauras">Chauras</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                        <label class="form-label">Gala Style:</label>
+                        <div class="d-flex flex-wrap stiching-option-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="GALA_STYLE" id="GALA_STYLE_BanGala" value="Ban Gala">
+                                <label class="form-check-label" for="GALA_STYLE_BanGala">Ban Gala</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="GALA_STYLE" id="GALA_STYLE_Collar" value="Collar">
+                                <label class="form-check-label" for="GALA_STYLE_Collar">Collar</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="GALA_STYLE" id="GALA_STYLE_Simple" value="Simple">
+                                <label class="form-check-label" for="GALA_STYLE_Simple">Simple</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                        <label class="form-label">Patti Style:</label>
+                        <div class="d-flex flex-wrap stiching-option-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="PATTI_STYLE" id="PATTI_STYLE_Open" value="Open">
+                                <label class="form-check-label" for="PATTI_STYLE_Open">Open</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="PATTI_STYLE" id="PATTI_STYLE_Gum" value="Gum">
+                                <label class="form-check-label" for="PATTI_STYLE_Gum">Gum</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="PATTI_STYLE" id="PATTI_STYLE_Normal" value="Normal">
+                                <label class="form-check-label" for="PATTI_STYLE_Normal">Normal</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                        <label class="form-label">Front Pocket:</label>
+                        <div class="d-flex flex-wrap stiching-option-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="FRONT_POCKET" id="FRONT_POCKET_No" value="No">
+                                <label class="form-check-label" for="FRONT_POCKET_No">No</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="FRONT_POCKET" id="FRONT_POCKET_Yes" value="Yes">
+                                <label class="form-check-label" for="FRONT_POCKET_Yes">Yes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                        <label class="form-label">Side Pockets:</label>
+                        <div class="d-flex flex-wrap stiching-option-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="SIDE_POCKETS" id="SIDE_POCKETS_None" value="None">
+                                <label class="form-check-label" for="SIDE_POCKETS_None">None</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="SIDE_POCKETS" id="SIDE_POCKETS_1Side" value="1 Side">
+                                <label class="form-check-label" for="SIDE_POCKETS_1Side">1 Side</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="SIDE_POCKETS" id="SIDE_POCKETS_2Side" value="2 Side">
+                                <label class="form-check-label" for="SIDE_POCKETS_2Side">2 Side</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                        <label class="form-label">Fitting Style:</label>
+                        <div class="d-flex flex-wrap stiching-option-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="FITTING_STYLE" id="FITTING_STYLE_Loose" value="Loose">
+                                <label class="form-check-label" for="FITTING_STYLE_Loose">Loose</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="FITTING_STYLE" id="FITTING_STYLE_SmartFit" value="Smart Fit">
+                                <label class="form-check-label" for="FITTING_STYLE_SmartFit">Smart Fit</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-end pt-5 pb-10 pr-15 stiching-actions">
+                <button class="btn btn-danger btn-delete" id="BtnDelete" style="display:none"><i class="fa fa-trash"></i> Delete</button>
+                <button class="btn btn-primary btn-save" id="BtnSave"><i class="fa fa-save"></i> Save</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bs-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myExtraLargeModalLabel">Quick Search</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="card text-left">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <div id="gridContainer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section LinkScriptSection{
+    <script type="text/javascript">
+        var Permissions = @Html.Raw(Json.Serialize(ViewBag.Permissions));
+        var SuitTypes = @Html.Raw(Json.Serialize(ViewBag.SuitTypes));
+    </script>
+    <script src="~/js/customjs/empr_StichingOrder.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        $(function () {
+            empr_StichingOrder.InitEvents();
+        });
+    </script>
+}

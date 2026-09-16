@@ -1441,6 +1441,32 @@ namespace Empire_ERP.Core.Services
             return dropdown;
         }
 
+        public static List<KeyValuePair<int, string>> SuitTypeDropdown()
+        {
+            List<KeyValuePair<int, string>> dropdown = new List<KeyValuePair<int, string>>();
+            using (SqlConnection conn = new SqlConnection(new SQLService().getconnstring()))
+            {
+                string query = "SELECT GROUP_CODE,GROUP_NAME FROM TBL_SUITTYPE WHERE DLT = 'T' AND ASTATUS = 'Y' ORDER BY 1 ASC";
+                using (SqlCommand command = new SqlCommand(query, conn))
+                {
+                    conn.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                int code = reader.GetInt32(0);
+                                string name = reader.GetString(1);
+                                dropdown.Add(new KeyValuePair<int, string>(code, name));
+                            }
+                        }
+                    }
+                }
+            }
+            return dropdown;
+        }
+
         public static List<KeyValuePair<int, string>> PortDropdown()
         {
             List<KeyValuePair<int, string>> dropdown = new List<KeyValuePair<int, string>>();

@@ -1,0 +1,15 @@
+using Empire_ERP.Core.Entities;
+
+namespace Empire_ERP.Core.Interfaces
+{
+    public interface IStichingOrderRepository
+    {
+        MyHttpResponseMessage QuickSearch(Common common);
+        MyHttpResponseMessage GetCustomerById(int id, Common common);
+        MyHttpResponseMessage GetCustomerByContactNo(string contactNo, Common common);
+        MyHttpResponseMessage GetOrderById(int id, Common common);
+        MyHttpResponseMessage Save(StichingOrder model, Common common);
+        string GenerateNextId(Common common);
+        MyHttpResponseMessage Delete(int id, Common common);
+    }
+}

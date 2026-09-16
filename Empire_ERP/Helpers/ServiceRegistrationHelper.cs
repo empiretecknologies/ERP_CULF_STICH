@@ -403,6 +403,9 @@ namespace Empire_ERP.Helpers
 
             services.AddScoped<IUploadItemImagesService, UploadItemImagesService>();
             services.AddScoped<IUploadItemImagesRepository, UploadItemImagesRepository>();
+
+            services.AddScoped<IStichingOrderService, StichingOrderService>();
+            services.AddScoped<IStichingOrderRepository, StichingOrderRepository>();
         }
     }
 }
