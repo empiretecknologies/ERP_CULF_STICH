@@ -1,4 +1,5 @@
 using Empire_ERP.Core.Entities;
+using System.Data;
 
 namespace Empire_ERP.Core.Interfaces
 {
@@ -11,5 +12,6 @@ namespace Empire_ERP.Core.Interfaces
         MyHttpResponseMessage Save(StichingOrder model, Common common);
         string GenerateNextId(Common common);
         MyHttpResponseMessage Delete(int id, Common common);
+        MyHttpResponseMessage GetDataForPrintReport(RDLCReport modelRecord, DataTable details, Common common);
     }
 }

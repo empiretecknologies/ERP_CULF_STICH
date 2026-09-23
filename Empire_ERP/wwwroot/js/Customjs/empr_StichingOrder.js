@@ -2,6 +2,7 @@ var empr_StichingOrder = {
     InitEvents: function () {
         $(document).ready(function () {
             empr_StichingOrder.InitSuitType();
+            empr_StichingOrder.InitBrand();
             empr_StichingOrder.ResetForm();
 
             if ($("#CONTACT_NO").mask) {
@@ -46,25 +47,34 @@ var empr_StichingOrder = {
 
             $('body').on('click', '#BtnSave', function () {
                 if (Permissions != "Admin") {
-                    if (!$("#ORDER_ID").val() && !Permissions.r_ADD) {
+                    var serialVal = ($("#ID").val() || '').trim();
+                    if (!serialVal && !Permissions.r_ADD) {
                         empr_helper.notify("You are not allowed to add new record !", 2);
                     }
-                    else if (($("#ORDER_ID").val() > 0) && !Permissions.r_EDIT) {
+                    else if (serialVal && !Permissions.r_EDIT && !Permissions.r_ADD) {
                         empr_helper.notify("You are not allowed to edit records !", 2);
                     } else {
                         if (empr_StichingOrder.ValidateForm()) {
-                            empr_StichingOrder.Save();
+                            empr_StichingOrder.HandleSaveClick();
                         }
                     }
                 } else {
                     if (empr_StichingOrder.ValidateForm()) {
-                        empr_StichingOrder.Save();
+                        empr_StichingOrder.HandleSaveClick();
                     }
                 }
             });
 
             $('body').on('click', '#BtnDelete', function () {
                 empr_StichingOrder.Delete();
+            });
+
+            $('body').on('click', '#BtnPrint', function () {
+                empr_StichingOrder.GeneratePrintReport();
+            });
+
+            $('body').on('input', '#QTY, #RATE', function () {
+                empr_StichingOrder.CalculateAmount();
             });
 
             if (Permissions != "Admin") {
@@ -79,8 +89,13 @@ var empr_StichingOrder = {
         $("#ID").val('');
         $("#FULL_NAME").val('');
         $("#CONTACT_NO").val('');
+        $("#QTY").val('');
+        $("#RATE").val('');
+        $("#AMOUNT").val('');
+        $("#DEL_DATE").val('');
         empr_StichingOrder.ClearOrderFields();
         $('#BtnDelete').hide();
+        $('#BtnPrint').hide();
         if (Permissions != "Admin") {
             if (Permissions.r_ADD) {
                 $('#BtnSave').show();
@@ -99,13 +114,21 @@ var empr_StichingOrder = {
         $("#SLEEVES").val('');
         $("#CHEST").val('');
         $("#WAIST").val('');
+        $("#HIPSIZE").val('');
         $("#COLLAR_SIZE").val('');
         $("#ARMHOLE").val('');
         $("#CUFF_MORI").val('');
         $("#BOTTOM_LENGTH").val('');
         $("#PANCHA").val('');
         $("#ASAN_GHERA").val('');
+        $("#LOGO").val('');
+        $("#QTY").val('');
+        $("#RATE").val('');
+        $("#AMOUNT").val('');
+        $("#DEL_DATE").val('');
+        empr_StichingOrder.SetBrandValue(null);
         $('input[name="BOTTOM_TYPE"]').prop('checked', false);
+        $('input[name="BOTTOM_POCKET"]').prop('checked', false);
         $('input[name="DAMAN_STYLE"]').prop('checked', false);
         $('input[name="GALA_STYLE"]').prop('checked', false);
         $('input[name="PATTI_STYLE"]').prop('checked', false);
@@ -122,15 +145,28 @@ var empr_StichingOrder = {
         }
         return valid;
     },
+    GetRecordId: function (record) {
+        if (!record) {
+            return 0;
+        }
+        return record.id || record.ID || 0;
+    },
+    GetRecordOrderId: function (record) {
+        if (!record) {
+            return 0;
+        }
+        return record.ordeR_ID || record.ORDER_ID || record.oRDER_ID || 0;
+    },
     GetDataToSave: function () {
-        var idVal = $("#ID").val();
-        var orderIdVal = $("#ORDER_ID").val();
+        empr_StichingOrder.CalculateAmount();
+        var serialNo = parseInt(($("#ID").val() || '').trim(), 10);
+        var orderId = parseInt(($("#ORDER_ID").val() || '').trim(), 10);
         var suitTypeVal = $('#SUIT_TYPE').dxSelectBox('instance').option('value');
-        var customerId = (idVal === undefined || idVal === null || idVal === '') ? 0 : idVal;
+        var customerId = isNaN(serialNo) || serialNo <= 0 ? 0 : serialNo;
         var modelRecord = {
             ID: customerId,
             CUSTOMER_ID: customerId,
-            ORDER_ID: (orderIdVal === undefined || orderIdVal === null || orderIdVal === '') ? 0 : orderIdVal,
+            ORDER_ID: isNaN(orderId) || orderId <= 0 ? 0 : orderId,
             FULL_NAME: ($("#FULL_NAME").val() || '').trim(),
             CONTACT_NO: ($("#CONTACT_NO").val() || '').trim(),
             SUIT_TYPE: (suitTypeVal === undefined || suitTypeVal === null || suitTypeVal === '') ? '' : String(suitTypeVal),
@@ -139,6 +175,7 @@ var empr_StichingOrder = {
             SLEEVES: $("#SLEEVES").val(),
             CHEST: $("#CHEST").val(),
             WAIST: $("#WAIST").val(),
+            HIP_SIZE: $("#HIPSIZE").val(),
             COLLAR_SIZE: $("#COLLAR_SIZE").val(),
             ARMHOLE: $("#ARMHOLE").val(),
             CUFF_MORI: $("#CUFF_MORI").val(),
@@ -151,17 +188,72 @@ var empr_StichingOrder = {
             PATTI_STYLE: $('input[name="PATTI_STYLE"]:checked').val() || '',
             FRONT_POCKET: $('input[name="FRONT_POCKET"]:checked').val() || '',
             SIDE_POCKETS: $('input[name="SIDE_POCKETS"]:checked').val() || '',
-            FITTING_STYLE: $('input[name="FITTING_STYLE"]:checked').val() || ''
+            FITTING_STYLE: $('input[name="FITTING_STYLE"]:checked').val() || '',
+            BOTTOM_POCKET: $('input[name="BOTTOM_POCKET"]:checked').val() || '',
+            LOGO: ($("#LOGO").val() || '').trim(),
+            QTY: $("#QTY").val(),
+            RATE: $("#RATE").val(),
+            BRAND: empr_StichingOrder.GetBrandValue(),
+            AMOUNT: $("#AMOUNT").val(),
+            DEL_DATE: $("#DEL_DATE").val() || null
         };
         return modelRecord;
     },
-    Save: function () {
+    HandleSaveClick: function () {
+        var serialVal = ($("#ID").val() || '').trim();
+        if (serialVal) {
+            swal({
+                title: 'Current serial already exists',
+                text: "Update the existing record, or create a new serial with the current data?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0CC27E',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Update',
+                cancelButtonText: 'New Create',
+                confirmButtonClass: 'btn btn-success mr-5',
+                cancelButtonClass: 'btn btn-primary',
+                buttonsStyling: false,
+                allowOutsideClick: false
+            }).then(function (result) {
+                if (result === false) {
+                    return;
+                }
+                if (Permissions != "Admin" && !Permissions.r_EDIT) {
+                    empr_helper.notify("You are not allowed to edit records !", 2);
+                    return;
+                }
+                empr_StichingOrder.Save(false);
+            }, function (dismiss) {
+                if (dismiss === 'cancel') {
+                    if (Permissions != "Admin" && !Permissions.r_ADD) {
+                        empr_helper.notify("You are not allowed to add new record !", 2);
+                        return;
+                    }
+                    empr_StichingOrder.Save(true);
+                }
+            });
+        } else {
+            empr_StichingOrder.Save(true);
+        }
+    },
+    Save: function (isNewCreate) {
         var obj = empr_StichingOrder.GetDataToSave();
+        if (isNewCreate) {
+            obj.ORDER_ID = 0;
+            obj.ID = 0;
+            obj.CUSTOMER_ID = 0;
+        } else if (!obj.ID) {
+            empr_helper.notify("Serial No not found for update.", 2);
+            return;
+        }
         ajaxHelper.ajaxPostJsonData(obj, "/StichingOrder/Save", function (data) {
             empr_helper.notify(data.msg, data.msgType);
             if (data.msgType == 1) {
-                empr_StichingOrder.ResetForm();
-                $('#BtnDelete').hide();
+                var savedId = data.data || data.tranId;
+                if (savedId) {
+                    empr_StichingOrder.GetOrderById(savedId);
+                }
             }
         }, false, true);
     },
@@ -215,8 +307,8 @@ var empr_StichingOrder = {
         empr_StichingOrder.GetCustomerByContactNo(contactNo);
     },
     BindCustomerLookup: function (record) {
-        $("#ORDER_ID").val('');
-        $("#ID").val(record.id || '');
+        $("#ORDER_ID").val(empr_StichingOrder.GetRecordOrderId(record) || '');
+        $("#ID").val(empr_StichingOrder.GetRecordId(record) || '');
         $("#FULL_NAME").val(record.fulL_NAME || '');
         $("#CONTACT_NO").val(record.contacT_NO || '');
         empr_StichingOrder.FillMeasurementFields(record);
@@ -242,13 +334,20 @@ var empr_StichingOrder = {
         $("#SLEEVES").val(record.sleeves ?? '');
         $("#CHEST").val(record.chest ?? '');
         $("#WAIST").val(record.waist ?? '');
+        $("#HIPSIZE").val(record.hiP_SIZE ?? '');
         $("#COLLAR_SIZE").val(record.collaR_SIZE ?? '');
         $("#ARMHOLE").val(record.armhole ?? '');
         $("#CUFF_MORI").val(record.cufF_MORI ?? '');
         $("#BOTTOM_LENGTH").val(record.bottoM_LENGTH ?? '');
         $("#PANCHA").val(record.pancha ?? '');
         $("#ASAN_GHERA").val(record.asaN_GHERA ?? '');
+        $("#LOGO").val(record.logo ?? '');
+        $("#QTY").val(record.qty ?? '');
+        $("#RATE").val(record.rate ?? '');
+        $("#DEL_DATE").val(empr_StichingOrder.FormatDateInput(record.deL_DATE));
+        empr_StichingOrder.SetBrandValue(record.brand);
         $('input[name="BOTTOM_TYPE"]').prop('checked', false);
+        $('input[name="BOTTOM_POCKET"]').prop('checked', false);
         $('input[name="DAMAN_STYLE"]').prop('checked', false);
         $('input[name="GALA_STYLE"]').prop('checked', false);
         $('input[name="PATTI_STYLE"]').prop('checked', false);
@@ -276,6 +375,10 @@ var empr_StichingOrder = {
         if (record.fittinG_STYLE) {
             $('input[name="FITTING_STYLE"][value="' + record.fittinG_STYLE + '"]').prop('checked', true);
         }
+        if (record.bottoM_POCKET) {
+            $('input[name="BOTTOM_POCKET"][value="' + record.bottoM_POCKET + '"]').prop('checked', true);
+        }
+        empr_StichingOrder.CalculateAmount();
     },
     GetCustomerById: function (id) {
         ajaxHelper.ajaxGetJson('/StichingOrder/GetCustomerById?id=' + id, function (data) {
@@ -300,8 +403,8 @@ var empr_StichingOrder = {
             empr_StichingOrder.ResetForm();
             if (data.msgType == 1) {
                 var record = data.data;
-                $("#ORDER_ID").val(record.ordeR_ID || '');
-                $("#ID").val(record.id || '');
+                $("#ORDER_ID").val(empr_StichingOrder.GetRecordOrderId(record) || '');
+                $("#ID").val(empr_StichingOrder.GetRecordId(record) || '');
                 $("#FULL_NAME").val(record.fulL_NAME || '');
                 $("#CONTACT_NO").val(record.contacT_NO || '');
                 empr_StichingOrder.FillMeasurementFields(record);
@@ -323,6 +426,9 @@ var empr_StichingOrder = {
                     $('#BtnSave').show();
                     $('#BtnDelete').show();
                     $('#BtnNew').show();
+                }
+                if (Permissions == "Admin" || Permissions.r_PRINT) {
+                    $('#BtnPrint').show();
                 }
             } else {
                 empr_helper.notify(data.msg, data.msgType);
@@ -348,6 +454,9 @@ var empr_StichingOrder = {
             { dataField: 'fulL_NAME', caption: 'Customer Name' },
             { dataField: 'contacT_NO', caption: 'Contact Number' },
             { dataField: 'suiT_TYPE', caption: 'Suit Type' },
+            { dataField: 'fittinG_STYLE', caption: 'Fitting Type' },
+            { dataField: 'amount', caption: 'Amount' },
+            { dataField: 'deL_DATE', caption: 'Delivery Date', dataType: 'date', format: 'dd-MM-yyyy' },
             { dataField: 'adD_USER_ID', caption: 'Created By', visible: false },
             { dataField: 'adD_DATE', caption: 'Created Date', visible: false, dataType: 'date', format: 'dd-MM-yyy' },
             { dataField: 'adD_COMPUTER_NAME', caption: 'Created Computer', visible: false },
@@ -363,6 +472,77 @@ var empr_StichingOrder = {
     InitSuitType: function () {
         ati_dxHelper.createDropdownSingle("SUIT_TYPE", SuitTypes, null, "key", "value", "Select", function () { });
     },
+    InitBrand: function () {
+        var brands = [
+            { key: 'Junaid Jamshed', value: 'Junaid Jamshed' },
+            { key: 'Gul Ahmed', value: 'Gul Ahmed' },
+            { key: 'Bonanza', value: 'Bonanza' },
+            { key: 'Al Karam', value: 'Al Karam' },
+            { key: 'Uniworth', value: 'Uniworth' },
+            { key: 'Cambridge', value: 'Cambridge' },
+            { key: 'Charcoal', value: 'Charcoal' },
+            { key: 'Outfitters', value: 'Outfitters' },
+            { key: 'Leisure Club', value: 'Leisure Club' },
+            { key: 'ChenOne', value: 'ChenOne' },
+            { key: 'Breakout', value: 'Breakout' },
+            { key: 'Cougar', value: 'Cougar' },
+            { key: 'Diners', value: 'Diners' },
+            { key: 'Edenrobe', value: 'Edenrobe' },
+            { key: 'Royal Tag', value: 'Royal Tag' },
+            { key: 'Engine', value: 'Engine' },
+            { key: 'Polo', value: 'Polo' },
+            { key: 'Levi\'s', value: 'Levi\'s' },
+            { key: 'US Polo', value: 'US Polo' },
+            { key: 'Splash', value: 'Splash' }
+        ];
+        ati_dxHelper.createDropdownSingle("BRAND", brands, null, "key", "value", "Select", function () { });
+    },
+    GetBrandValue: function () {
+        var instance = $('#BRAND').dxSelectBox('instance');
+        if (!instance) {
+            return '';
+        }
+        var val = instance.option('value');
+        return (val === undefined || val === null || val === '') ? '' : String(val);
+    },
+    SetBrandValue: function (val) {
+        var instance = $('#BRAND').dxSelectBox('instance');
+        if (!instance) {
+            return;
+        }
+        if (val === undefined || val === null || val === '') {
+            instance.option('value', null);
+            return;
+        }
+        instance.option('value', val);
+    },
+    FormatDateInput: function (value) {
+        if (!value) {
+            return '';
+        }
+        var text = String(value);
+        if (text.indexOf('T') > -1) {
+            return text.split('T')[0];
+        }
+        var parts = text.split('-');
+        if (parts.length === 3 && parts[0].length === 2 && parts[2].length === 4) {
+            return parts[2] + '-' + parts[1] + '-' + parts[0];
+        }
+        if (parts.length === 3 && parts[0].length === 4) {
+            return parts[0] + '-' + parts[1] + '-' + parts[2];
+        }
+        return '';
+    },
+    CalculateAmount: function () {
+        var qty = parseFloat($("#QTY").val()) || 0;
+        var rate = parseFloat($("#RATE").val()) || 0;
+        var amount = qty * rate;
+        if (!qty && !rate) {
+            $("#AMOUNT").val('');
+            return;
+        }
+        $("#AMOUNT").val(amount.toFixed(2));
+    },
     SetSuitTypeValue: function (val) {
         var instance = $('#SUIT_TYPE').dxSelectBox('instance');
         if (!instance) {
@@ -374,5 +554,28 @@ var empr_StichingOrder = {
         }
         var parsed = parseInt(val);
         instance.option('value', isNaN(parsed) ? null : parsed);
+    },
+    GeneratePrintReport: function () {
+        var TRAN_ID = $('#ORDER_ID').val();
+        if (TRAN_ID == 0 || TRAN_ID == null || TRAN_ID == undefined || TRAN_ID == "") {
+            empr_helper.notify("Please open the bill in edit mode.", 2);
+            return;
+        }
+        var dataModel = {
+            TRAN_ID: TRAN_ID
+        };
+        ajaxHelper.ajaxPostJsonData(dataModel, "/StichingOrder/GetPrintReport", function (data) {
+            if (data.msgType == 1) {
+                $('#ModalBody').empty();
+                setTimeout(function () {
+                    $('#ModalBody').html("<center><object id='objReport' data='" + window.location.origin + data.data + "' width='1100' height='600'></object></center>");
+                    $('#ShowReportModal').show();
+                    $('#ShowReportModal').modal('show');
+                }, 100);
+            }
+            else {
+                empr_helper.notify(data.msg, data.msgType);
+            }
+        }, false, true);
     }
 };

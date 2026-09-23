@@ -395,6 +395,44 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="StichingOrder" msprop:Generator_RowEvHandlerName="StichingOrderRowChangeEventHandler" msprop:Generator_RowDeletedName="StichingOrderRowDeleted" msprop:Generator_RowDeletingName="StichingOrderRowDeleting" msprop:Generator_RowEvArgName="StichingOrderRowChangeEvent" msprop:Generator_TablePropName="StichingOrder" msprop:Generator_RowChangedName="StichingOrderRowChanged" msprop:Generator_UserTableName="StichingOrder" msprop:Generator_RowChangingName="StichingOrderRowChanging" msprop:Generator_RowClassName="StichingOrderRow" msprop:Generator_TableClassName="StichingOrderDataTable" msprop:Generator_TableVarName="tableStichingOrder">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SerialID" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerName" type="xs:string" minOccurs="0" />
+              <xs:element name="ContactNo" type="xs:string" minOccurs="0" />
+              <xs:element name="SuitType" type="xs:string" minOccurs="0" />
+              <xs:element name="Design" type="xs:string" minOccurs="0" />
+              <xs:element name="Amount" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderDate" type="xs:string" minOccurs="0" />
+              <xs:element name="DeliveryDate" type="xs:string" minOccurs="0" />
+              <xs:element name="KurtaLength" type="xs:string" minOccurs="0" />
+              <xs:element name="Shoulder" type="xs:string" minOccurs="0" />
+              <xs:element name="Sleeves" type="xs:string" minOccurs="0" />
+              <xs:element name="Chest" type="xs:string" minOccurs="0" />
+              <xs:element name="Waist" type="xs:string" minOccurs="0" />
+              <xs:element name="HipSize" type="xs:string" minOccurs="0" />
+              <xs:element name="CollarSize" type="xs:string" minOccurs="0" />
+              <xs:element name="Armhole" type="xs:string" minOccurs="0" />
+              <xs:element name="CuffMori" type="xs:string" minOccurs="0" />
+              <xs:element name="BottomType" type="xs:string" minOccurs="0" />
+              <xs:element name="BottomLength" type="xs:string" minOccurs="0" />
+              <xs:element name="Pancha" type="xs:string" minOccurs="0" />
+              <xs:element name="AsanGhera" type="xs:string" minOccurs="0" />
+              <xs:element name="DamanStyle" type="xs:string" minOccurs="0" />
+              <xs:element name="GalaStyle" type="xs:string" minOccurs="0" />
+              <xs:element name="PattiStyle" type="xs:string" minOccurs="0" />
+              <xs:element name="FrontPocket" type="xs:string" minOccurs="0" />
+              <xs:element name="SidePockets" type="xs:string" minOccurs="0" />
+              <xs:element name="FittingStyle" type="xs:string" minOccurs="0" />
+              <xs:element name="BottomPocket" type="xs:string" minOccurs="0" />
+              <xs:element name="Logo" type="xs:string" minOccurs="0" />
+              <xs:element name="ClothQty" type="xs:string" minOccurs="0" />
+              <xs:element name="ClothRate" type="xs:string" minOccurs="0" />
+              <xs:element name="Brand" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
     </xs:complexType>
   </xs:element>
