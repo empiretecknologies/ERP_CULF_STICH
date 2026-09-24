@@ -228,6 +228,7 @@ namespace Empire_ERP.Controllers
             table.Columns.Add("Armhole", typeof(string));
             table.Columns.Add("CuffMori", typeof(string));
             table.Columns.Add("BottomType", typeof(string));
+            table.Columns.Add("BottomStyle", typeof(string));
             table.Columns.Add("BottomLength", typeof(string));
             table.Columns.Add("Pancha", typeof(string));
             table.Columns.Add("AsanGhera", typeof(string));
@@ -242,6 +243,10 @@ namespace Empire_ERP.Controllers
             table.Columns.Add("ClothQty", typeof(string));
             table.Columns.Add("ClothRate", typeof(string));
             table.Columns.Add("Brand", typeof(string));
+            table.Columns.Add("StichQty", typeof(string));
+            table.Columns.Add("StichRate", typeof(string));
+            table.Columns.Add("StichAmt", typeof(string));
+            table.Columns.Add("NetAmount", typeof(string));
             return table;
         }
     }

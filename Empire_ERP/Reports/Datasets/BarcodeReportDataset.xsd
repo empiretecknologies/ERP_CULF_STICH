@@ -430,6 +430,11 @@
               <xs:element name="ClothQty" type="xs:string" minOccurs="0" />
               <xs:element name="ClothRate" type="xs:string" minOccurs="0" />
               <xs:element name="Brand" type="xs:string" minOccurs="0" />
+              <xs:element name="BottomStyle" type="xs:string" minOccurs="0" />
+              <xs:element name="StichQty" type="xs:string" minOccurs="0" />
+              <xs:element name="StichRate" type="xs:string" minOccurs="0" />
+              <xs:element name="StichAmt" type="xs:string" minOccurs="0" />
+              <xs:element name="NetAmount" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

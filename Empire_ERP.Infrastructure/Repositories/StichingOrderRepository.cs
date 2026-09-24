@@ -240,10 +240,10 @@ namespace Empire_ERP.Infrastructure.Repositories
                 {
                     string query = "SELECT TOP 1 C.ID,K.ID AS ORDER_ID,C.FULL_NAME,C.CONTACT_NO,K.CUSTOMER_ID," +
                                    "K.SUIT_TYPE,K.KURTA_LENGTH,K.SHOULDER,K.SLEEVES,K.CHEST,K.WAIST,K.HIP_SIZE," +
-                                   "K.COLLAR_SIZE,K.ARMHOLE,K.CUFF_MORI,K.BOTTOM_TYPE,K.BOTTOM_LENGTH," +
+                                   "K.COLLAR_SIZE,K.ARMHOLE,K.CUFF_MORI,K.BOTTOM_TYPE,K.BOTTOM_STYLE,K.BOTTOM_LENGTH," +
                                    "K.PANCHA,K.ASAN_GHERA,K.DAMAN_STYLE,K.GALA_STYLE,K.PATTI_STYLE," +
                                    "K.FRONT_POCKET,K.SIDE_POCKETS,K.FITTING_STYLE,K.BOTTOM_POCKET,K.LOGO," +
-                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.DEL_DATE " +
+                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.STICH_QTY,K.STICH_RATE,K.STICH_AMT,K.DEL_DATE " +
                                    "FROM TBL_WALKCUSTOMER C " +
                                    "LEFT JOIN TBL_KURTASHALWAR K ON K.ID = (" +
                                    "SELECT TOP 1 K2.ID FROM TBL_KURTASHALWAR K2 " +
@@ -265,31 +265,35 @@ namespace Empire_ERP.Infrastructure.Repositories
                             FULL_NAME = Convert.ToString(reader["FULL_NAME"]),
                             CONTACT_NO = Convert.ToString(reader["CONTACT_NO"]),
                             SUIT_TYPE = Convert.ToString(reader["SUIT_TYPE"]),
-                            KURTA_LENGTH = GetDouble(reader["KURTA_LENGTH"]),
-                            SHOULDER = GetDouble(reader["SHOULDER"]),
-                            SLEEVES = GetDouble(reader["SLEEVES"]),
-                            CHEST = GetDouble(reader["CHEST"]),
-                            WAIST = GetDouble(reader["WAIST"]),
-                            HIP_SIZE = GetDouble(reader["HIP_SIZE"]),
-                            COLLAR_SIZE = GetDouble(reader["COLLAR_SIZE"]),
-                            ARMHOLE = GetDouble(reader["ARMHOLE"]),
-                            CUFF_MORI = GetDouble(reader["CUFF_MORI"]),
-                            BOTTOM_TYPE = Convert.ToString(reader["BOTTOM_TYPE"]),
-                            BOTTOM_LENGTH = GetDouble(reader["BOTTOM_LENGTH"]),
-                            PANCHA = GetDouble(reader["PANCHA"]),
-                            ASAN_GHERA = GetDouble(reader["ASAN_GHERA"]),
+                            KURTA_LENGTH = GetText(reader["KURTA_LENGTH"]),
+                            SHOULDER = GetText(reader["SHOULDER"]),
+                            SLEEVES = GetText(reader["SLEEVES"]),
+                            CHEST = GetText(reader["CHEST"]),
+                            WAIST = GetText(reader["WAIST"]),
+                            HIP_SIZE = GetText(reader["HIP_SIZE"]),
+                            COLLAR_SIZE = GetText(reader["COLLAR_SIZE"]),
+                            ARMHOLE = GetText(reader["ARMHOLE"]),
+                            CUFF_MORI = GetText(reader["CUFF_MORI"]),
+                            BOTTOM_TYPE = GetText(reader["BOTTOM_TYPE"]),
+                            BOTTOM_STYLE = GetText(reader["BOTTOM_STYLE"]),
+                            BOTTOM_LENGTH = GetText(reader["BOTTOM_LENGTH"]),
+                            PANCHA = GetText(reader["PANCHA"]),
+                            ASAN_GHERA = GetText(reader["ASAN_GHERA"]),
                             DAMAN_STYLE = Convert.ToString(reader["DAMAN_STYLE"]),
                             GALA_STYLE = Convert.ToString(reader["GALA_STYLE"]),
                             PATTI_STYLE = Convert.ToString(reader["PATTI_STYLE"]),
                             FRONT_POCKET = Convert.ToString(reader["FRONT_POCKET"]),
                             SIDE_POCKETS = Convert.ToString(reader["SIDE_POCKETS"]),
                             FITTING_STYLE = Convert.ToString(reader["FITTING_STYLE"]),
-                            BOTTOM_POCKET = Convert.ToString(reader["BOTTOM_POCKET"]),
+                            BOTTOM_POCKET = GetText(reader["BOTTOM_POCKET"]),
                             LOGO = Convert.ToString(reader["LOGO"]),
                             QTY = GetDouble(reader["QTY"]),
                             RATE = GetDouble(reader["RATE"]),
                             BRAND = Convert.ToString(reader["BRAND"]),
                             AMOUNT = GetDouble(reader["AMOUNT"]),
+                            STICH_QTY = GetDouble(reader["STICH_QTY"]),
+                            STICH_RATE = GetDouble(reader["STICH_RATE"]),
+                            STICH_AMT = GetDouble(reader["STICH_AMT"]),
                             DEL_DATE = reader["DEL_DATE"] == DBNull.Value ? null : Convert.ToDateTime(reader["DEL_DATE"]),
                         };
 
@@ -327,10 +331,10 @@ namespace Empire_ERP.Infrastructure.Repositories
                 {
                     string query = "SELECT K.ID AS ORDER_ID,C.ID,K.CUSTOMER_ID,C.FULL_NAME,C.CONTACT_NO," +
                                    "K.SUIT_TYPE,K.KURTA_LENGTH,K.SHOULDER,K.SLEEVES,K.CHEST,K.WAIST,K.HIP_SIZE," +
-                                   "K.COLLAR_SIZE,K.ARMHOLE,K.CUFF_MORI,K.BOTTOM_TYPE,K.BOTTOM_LENGTH," +
+                                   "K.COLLAR_SIZE,K.ARMHOLE,K.CUFF_MORI,K.BOTTOM_TYPE,K.BOTTOM_STYLE,K.BOTTOM_LENGTH," +
                                    "K.PANCHA,K.ASAN_GHERA,K.DAMAN_STYLE,K.GALA_STYLE,K.PATTI_STYLE," +
                                    "K.FRONT_POCKET,K.SIDE_POCKETS,K.FITTING_STYLE,K.BOTTOM_POCKET,K.LOGO," +
-                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.DEL_DATE " +
+                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.STICH_QTY,K.STICH_RATE,K.STICH_AMT,K.DEL_DATE " +
                                    "FROM TBL_KURTASHALWAR K " +
                                    "INNER JOIN TBL_WALKCUSTOMER C ON C.ID = K.CUSTOMER_ID AND C.DLT = 'T' " +
                                    "WHERE K.MENU_ID = '" + common.MenuID + "' AND K.DLT = 'T' AND K.ID = '" + id + "'";
@@ -348,31 +352,35 @@ namespace Empire_ERP.Infrastructure.Repositories
                             FULL_NAME = Convert.ToString(reader["FULL_NAME"]),
                             CONTACT_NO = Convert.ToString(reader["CONTACT_NO"]),
                             SUIT_TYPE = Convert.ToString(reader["SUIT_TYPE"]),
-                            KURTA_LENGTH = GetDouble(reader["KURTA_LENGTH"]),
-                            SHOULDER = GetDouble(reader["SHOULDER"]),
-                            SLEEVES = GetDouble(reader["SLEEVES"]),
-                            CHEST = GetDouble(reader["CHEST"]),
-                            WAIST = GetDouble(reader["WAIST"]),
-                            HIP_SIZE = GetDouble(reader["HIP_SIZE"]),
-                            COLLAR_SIZE = GetDouble(reader["COLLAR_SIZE"]),
-                            ARMHOLE = GetDouble(reader["ARMHOLE"]),
-                            CUFF_MORI = GetDouble(reader["CUFF_MORI"]),
-                            BOTTOM_TYPE = Convert.ToString(reader["BOTTOM_TYPE"]),
-                            BOTTOM_LENGTH = GetDouble(reader["BOTTOM_LENGTH"]),
-                            PANCHA = GetDouble(reader["PANCHA"]),
-                            ASAN_GHERA = GetDouble(reader["ASAN_GHERA"]),
+                            KURTA_LENGTH = GetText(reader["KURTA_LENGTH"]),
+                            SHOULDER = GetText(reader["SHOULDER"]),
+                            SLEEVES = GetText(reader["SLEEVES"]),
+                            CHEST = GetText(reader["CHEST"]),
+                            WAIST = GetText(reader["WAIST"]),
+                            HIP_SIZE = GetText(reader["HIP_SIZE"]),
+                            COLLAR_SIZE = GetText(reader["COLLAR_SIZE"]),
+                            ARMHOLE = GetText(reader["ARMHOLE"]),
+                            CUFF_MORI = GetText(reader["CUFF_MORI"]),
+                            BOTTOM_TYPE = GetText(reader["BOTTOM_TYPE"]),
+                            BOTTOM_STYLE = GetText(reader["BOTTOM_STYLE"]),
+                            BOTTOM_LENGTH = GetText(reader["BOTTOM_LENGTH"]),
+                            PANCHA = GetText(reader["PANCHA"]),
+                            ASAN_GHERA = GetText(reader["ASAN_GHERA"]),
                             DAMAN_STYLE = Convert.ToString(reader["DAMAN_STYLE"]),
                             GALA_STYLE = Convert.ToString(reader["GALA_STYLE"]),
                             PATTI_STYLE = Convert.ToString(reader["PATTI_STYLE"]),
                             FRONT_POCKET = Convert.ToString(reader["FRONT_POCKET"]),
                             SIDE_POCKETS = Convert.ToString(reader["SIDE_POCKETS"]),
                             FITTING_STYLE = Convert.ToString(reader["FITTING_STYLE"]),
-                            BOTTOM_POCKET = Convert.ToString(reader["BOTTOM_POCKET"]),
+                            BOTTOM_POCKET = GetText(reader["BOTTOM_POCKET"]),
                             LOGO = Convert.ToString(reader["LOGO"]),
                             QTY = GetDouble(reader["QTY"]),
                             RATE = GetDouble(reader["RATE"]),
                             BRAND = Convert.ToString(reader["BRAND"]),
                             AMOUNT = GetDouble(reader["AMOUNT"]),
+                            STICH_QTY = GetDouble(reader["STICH_QTY"]),
+                            STICH_RATE = GetDouble(reader["STICH_RATE"]),
+                            STICH_AMT = GetDouble(reader["STICH_AMT"]),
                             DEL_DATE = reader["DEL_DATE"] == DBNull.Value ? null : Convert.ToDateTime(reader["DEL_DATE"]),
                         };
 
@@ -443,15 +451,15 @@ namespace Empire_ERP.Infrastructure.Repositories
         {
             return "INSERT INTO TBL_KURTASHALWAR " +
                    "(ID,CUSTOMER_ID,SUIT_TYPE,KURTA_LENGTH,SHOULDER,SLEEVES,CHEST,WAIST,HIP_SIZE,COLLAR_SIZE,ARMHOLE,CUFF_MORI," +
-                   "BOTTOM_TYPE,BOTTOM_LENGTH,PANCHA,ASAN_GHERA,DAMAN_STYLE,GALA_STYLE,PATTI_STYLE," +
-                   "FRONT_POCKET,SIDE_POCKETS,FITTING_STYLE,BOTTOM_POCKET,LOGO,QTY,RATE,BRAND,AMOUNT,DEL_DATE,ADD_USER_ID,ADD_DATE," +
+                   "BOTTOM_TYPE,BOTTOM_STYLE,BOTTOM_LENGTH,PANCHA,ASAN_GHERA,DAMAN_STYLE,GALA_STYLE,PATTI_STYLE," +
+                   "FRONT_POCKET,SIDE_POCKETS,FITTING_STYLE,BOTTOM_POCKET,LOGO,QTY,RATE,BRAND,AMOUNT,STICH_QTY,STICH_RATE,STICH_AMT,DEL_DATE,ADD_USER_ID,ADD_DATE," +
                    "ADD_COMPUTER_NAME,ADD_IP_ADDRESS,EDIT_USER_ID,EDIT_DATE," +
                    "EDIT_COMPUTER_NAME,ADD_POSTALCODE,EDIT_POSTALCODE," +
                    "MENU_ID,DLT)" +
                    "VALUES" +
-                   "('" + id + "','" + customerId + "','" + modelRecord.SUIT_TYPE + "'," + FormatNumber(modelRecord.KURTA_LENGTH) + "," + FormatNumber(modelRecord.SHOULDER) + "," + FormatNumber(modelRecord.SLEEVES) + "," + FormatNumber(modelRecord.CHEST) + "," + FormatNumber(modelRecord.WAIST) + "," + FormatNumber(modelRecord.HIP_SIZE) + "," + FormatNumber(modelRecord.COLLAR_SIZE) + "," + FormatNumber(modelRecord.ARMHOLE) + "," + FormatNumber(modelRecord.CUFF_MORI) + "," +
-                   "'" + modelRecord.BOTTOM_TYPE + "'," + FormatNumber(modelRecord.BOTTOM_LENGTH) + "," + FormatNumber(modelRecord.PANCHA) + "," + FormatNumber(modelRecord.ASAN_GHERA) + ",'" + modelRecord.DAMAN_STYLE + "','" + modelRecord.GALA_STYLE + "','" + modelRecord.PATTI_STYLE + "'," +
-                   "'" + modelRecord.FRONT_POCKET + "','" + modelRecord.SIDE_POCKETS + "','" + modelRecord.FITTING_STYLE + "','" + modelRecord.BOTTOM_POCKET + "','" + modelRecord.LOGO + "'," + FormatNumber(modelRecord.QTY) + "," + FormatNumber(modelRecord.RATE) + ",'" + modelRecord.BRAND + "'," + FormatNumber(modelRecord.AMOUNT) + "," + FormatDate(modelRecord.DEL_DATE) + ",'" + userid + "','" + CommonService.GetDateTime("Pakistan Standard Time") + "'," +
+                   "('" + id + "','" + customerId + "','" + modelRecord.SUIT_TYPE + "'," + FormatText(modelRecord.KURTA_LENGTH) + "," + FormatText(modelRecord.SHOULDER) + "," + FormatText(modelRecord.SLEEVES) + "," + FormatText(modelRecord.CHEST) + "," + FormatText(modelRecord.WAIST) + "," + FormatText(modelRecord.HIP_SIZE) + "," + FormatText(modelRecord.COLLAR_SIZE) + "," + FormatText(modelRecord.ARMHOLE) + "," + FormatText(modelRecord.CUFF_MORI) + "," +
+                   FormatText(modelRecord.BOTTOM_TYPE) + "," + FormatText(modelRecord.BOTTOM_STYLE) + "," + FormatText(modelRecord.BOTTOM_LENGTH) + "," + FormatText(modelRecord.PANCHA) + "," + FormatText(modelRecord.ASAN_GHERA) + ",'" + modelRecord.DAMAN_STYLE + "','" + modelRecord.GALA_STYLE + "'," + FormatText(modelRecord.PATTI_STYLE) + "," +
+                   "'" + modelRecord.FRONT_POCKET + "','" + modelRecord.SIDE_POCKETS + "','" + modelRecord.FITTING_STYLE + "'," + FormatText(modelRecord.BOTTOM_POCKET) + ",'" + modelRecord.LOGO + "'," + FormatNumber(modelRecord.QTY) + "," + FormatNumber(modelRecord.RATE) + ",'" + modelRecord.BRAND + "'," + FormatNumber(modelRecord.AMOUNT) + "," + FormatNumber(modelRecord.STICH_QTY) + "," + FormatNumber(modelRecord.STICH_RATE) + "," + FormatNumber(modelRecord.STICH_AMT) + "," + FormatDate(modelRecord.DEL_DATE) + ",'" + userid + "','" + CommonService.GetDateTime("Pakistan Standard Time") + "'," +
                    "'" + Computer + "','" + Ip + "','" + userid + "','" + CommonService.GetDateTime("Pakistan Standard Time") + "'," +
                    "'" + Computer + "','" + Postal + "','" + Postal + "'," +
                    "'" + common.MenuID + "','T')";
@@ -461,31 +469,35 @@ namespace Empire_ERP.Infrastructure.Repositories
         {
             return "UPDATE TBL_KURTASHALWAR SET CUSTOMER_ID = '" + customerId + @"',
                     SUIT_TYPE = '" + modelRecord.SUIT_TYPE + @"',
-                    KURTA_LENGTH = " + FormatNumber(modelRecord.KURTA_LENGTH) + @",
-                    SHOULDER = " + FormatNumber(modelRecord.SHOULDER) + @",
-                    SLEEVES = " + FormatNumber(modelRecord.SLEEVES) + @",
-                    CHEST = " + FormatNumber(modelRecord.CHEST) + @",
-                    WAIST = " + FormatNumber(modelRecord.WAIST) + @",
-                    HIP_SIZE = " + FormatNumber(modelRecord.HIP_SIZE) + @",
-                    COLLAR_SIZE = " + FormatNumber(modelRecord.COLLAR_SIZE) + @",
-                    ARMHOLE = " + FormatNumber(modelRecord.ARMHOLE) + @",
-                    CUFF_MORI = " + FormatNumber(modelRecord.CUFF_MORI) + @",
-                    BOTTOM_TYPE = '" + modelRecord.BOTTOM_TYPE + @"',
-                    BOTTOM_LENGTH = " + FormatNumber(modelRecord.BOTTOM_LENGTH) + @",
-                    PANCHA = " + FormatNumber(modelRecord.PANCHA) + @",
-                    ASAN_GHERA = " + FormatNumber(modelRecord.ASAN_GHERA) + @",
+                    KURTA_LENGTH = " + FormatText(modelRecord.KURTA_LENGTH) + @",
+                    SHOULDER = " + FormatText(modelRecord.SHOULDER) + @",
+                    SLEEVES = " + FormatText(modelRecord.SLEEVES) + @",
+                    CHEST = " + FormatText(modelRecord.CHEST) + @",
+                    WAIST = " + FormatText(modelRecord.WAIST) + @",
+                    HIP_SIZE = " + FormatText(modelRecord.HIP_SIZE) + @",
+                    COLLAR_SIZE = " + FormatText(modelRecord.COLLAR_SIZE) + @",
+                    ARMHOLE = " + FormatText(modelRecord.ARMHOLE) + @",
+                    CUFF_MORI = " + FormatText(modelRecord.CUFF_MORI) + @",
+                    BOTTOM_TYPE = " + FormatText(modelRecord.BOTTOM_TYPE) + @",
+                    BOTTOM_STYLE = " + FormatText(modelRecord.BOTTOM_STYLE) + @",
+                    BOTTOM_LENGTH = " + FormatText(modelRecord.BOTTOM_LENGTH) + @",
+                    PANCHA = " + FormatText(modelRecord.PANCHA) + @",
+                    ASAN_GHERA = " + FormatText(modelRecord.ASAN_GHERA) + @",
                     DAMAN_STYLE = '" + modelRecord.DAMAN_STYLE + @"',
                     GALA_STYLE = '" + modelRecord.GALA_STYLE + @"',
-                    PATTI_STYLE = '" + modelRecord.PATTI_STYLE + @"',
+                    PATTI_STYLE = " + FormatText(modelRecord.PATTI_STYLE) + @",
                     FRONT_POCKET = '" + modelRecord.FRONT_POCKET + @"',
                     SIDE_POCKETS = '" + modelRecord.SIDE_POCKETS + @"',
                     FITTING_STYLE = '" + modelRecord.FITTING_STYLE + @"',
-                    BOTTOM_POCKET = '" + modelRecord.BOTTOM_POCKET + @"',
+                    BOTTOM_POCKET = " + FormatText(modelRecord.BOTTOM_POCKET) + @",
                     LOGO = '" + modelRecord.LOGO + @"',
                     QTY = " + FormatNumber(modelRecord.QTY) + @",
                     RATE = " + FormatNumber(modelRecord.RATE) + @",
                     BRAND = '" + modelRecord.BRAND + @"',
                     AMOUNT = " + FormatNumber(modelRecord.AMOUNT) + @",
+                    STICH_QTY = " + FormatNumber(modelRecord.STICH_QTY) + @",
+                    STICH_RATE = " + FormatNumber(modelRecord.STICH_RATE) + @",
+                    STICH_AMT = " + FormatNumber(modelRecord.STICH_AMT) + @",
                     DEL_DATE = " + FormatDate(modelRecord.DEL_DATE) + @",
                     EDIT_USER_ID = '" + userid + @"',
                     EDIT_DATE = '" + CommonService.GetDateTime("Pakistan Standard Time") + @"',
@@ -519,10 +531,10 @@ namespace Empire_ERP.Infrastructure.Repositories
                 {
                     string query = "SELECT K.ID AS ORDER_ID,C.ID,C.FULL_NAME,C.CONTACT_NO,ISNULL(ST.GROUP_NAME, K.SUIT_TYPE) AS SUIT_TYPE," +
                                    "K.KURTA_LENGTH,K.SHOULDER,K.SLEEVES,K.CHEST,K.WAIST,K.HIP_SIZE," +
-                                   "K.COLLAR_SIZE,K.ARMHOLE,K.CUFF_MORI,K.BOTTOM_TYPE,K.BOTTOM_LENGTH," +
+                                   "K.COLLAR_SIZE,K.ARMHOLE,K.CUFF_MORI,K.BOTTOM_TYPE,K.BOTTOM_STYLE,K.BOTTOM_LENGTH," +
                                    "K.PANCHA,K.ASAN_GHERA,K.DAMAN_STYLE,K.GALA_STYLE,K.PATTI_STYLE," +
                                    "K.FRONT_POCKET,K.SIDE_POCKETS,K.FITTING_STYLE,K.BOTTOM_POCKET,K.LOGO," +
-                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.DEL_DATE,K.ADD_DATE " +
+                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.STICH_QTY,K.STICH_RATE,K.STICH_AMT,K.DEL_DATE,K.ADD_DATE " +
                                    "FROM TBL_KURTASHALWAR K " +
                                    "INNER JOIN TBL_WALKCUSTOMER C ON C.ID = K.CUSTOMER_ID AND C.DLT = 'T' " +
                                    "LEFT OUTER JOIN TBL_SUITTYPE ST ON CONVERT(VARCHAR, ST.GROUP_CODE) = K.SUIT_TYPE " +
@@ -542,30 +554,35 @@ namespace Empire_ERP.Infrastructure.Repositories
                         dataRow["Amount"] = FormatPrintNumber(reader["AMOUNT"], "0.00");
                         dataRow["OrderDate"] = reader["ADD_DATE"] == DBNull.Value ? "" : Convert.ToDateTime(reader["ADD_DATE"]).ToString("dd-MM-yyyy");
                         dataRow["DeliveryDate"] = reader["DEL_DATE"] == DBNull.Value ? "" : Convert.ToDateTime(reader["DEL_DATE"]).ToString("dd-MM-yyyy");
-                        dataRow["KurtaLength"] = FormatPrintNumber(reader["KURTA_LENGTH"]);
-                        dataRow["Shoulder"] = FormatPrintNumber(reader["SHOULDER"]);
-                        dataRow["Sleeves"] = FormatPrintNumber(reader["SLEEVES"]);
-                        dataRow["Chest"] = FormatPrintNumber(reader["CHEST"]);
-                        dataRow["Waist"] = FormatPrintNumber(reader["WAIST"]);
-                        dataRow["HipSize"] = FormatPrintNumber(reader["HIP_SIZE"]);
-                        dataRow["CollarSize"] = FormatPrintNumber(reader["COLLAR_SIZE"]);
-                        dataRow["Armhole"] = FormatPrintNumber(reader["ARMHOLE"]);
-                        dataRow["CuffMori"] = FormatPrintNumber(reader["CUFF_MORI"]);
-                        dataRow["BottomType"] = Convert.ToString(reader["BOTTOM_TYPE"]);
-                        dataRow["BottomLength"] = FormatPrintNumber(reader["BOTTOM_LENGTH"]);
-                        dataRow["Pancha"] = FormatPrintNumber(reader["PANCHA"]);
-                        dataRow["AsanGhera"] = FormatPrintNumber(reader["ASAN_GHERA"]);
+                        dataRow["KurtaLength"] = GetText(reader["KURTA_LENGTH"]);
+                        dataRow["Shoulder"] = GetText(reader["SHOULDER"]);
+                        dataRow["Sleeves"] = GetText(reader["SLEEVES"]);
+                        dataRow["Chest"] = GetText(reader["CHEST"]);
+                        dataRow["Waist"] = GetText(reader["WAIST"]);
+                        dataRow["HipSize"] = GetText(reader["HIP_SIZE"]);
+                        dataRow["CollarSize"] = GetText(reader["COLLAR_SIZE"]);
+                        dataRow["Armhole"] = GetText(reader["ARMHOLE"]);
+                        dataRow["CuffMori"] = GetText(reader["CUFF_MORI"]);
+                        dataRow["BottomType"] = GetText(reader["BOTTOM_TYPE"]);
+                        dataRow["BottomStyle"] = GetText(reader["BOTTOM_STYLE"]);
+                        dataRow["BottomLength"] = GetText(reader["BOTTOM_LENGTH"]);
+                        dataRow["Pancha"] = GetText(reader["PANCHA"]);
+                        dataRow["AsanGhera"] = GetText(reader["ASAN_GHERA"]);
                         dataRow["DamanStyle"] = Convert.ToString(reader["DAMAN_STYLE"]);
                         dataRow["GalaStyle"] = Convert.ToString(reader["GALA_STYLE"]);
-                        dataRow["PattiStyle"] = Convert.ToString(reader["PATTI_STYLE"]);
+                        dataRow["PattiStyle"] = GetText(reader["PATTI_STYLE"]);
                         dataRow["FrontPocket"] = Convert.ToString(reader["FRONT_POCKET"]);
                         dataRow["SidePockets"] = Convert.ToString(reader["SIDE_POCKETS"]);
                         dataRow["FittingStyle"] = Convert.ToString(reader["FITTING_STYLE"]);
-                        dataRow["BottomPocket"] = Convert.ToString(reader["BOTTOM_POCKET"]);
+                        dataRow["BottomPocket"] = GetText(reader["BOTTOM_POCKET"]);
                         dataRow["Logo"] = Convert.ToString(reader["LOGO"]);
                         dataRow["ClothQty"] = FormatPrintNumber(reader["QTY"]);
                         dataRow["ClothRate"] = FormatPrintNumber(reader["RATE"], "0.00");
                         dataRow["Brand"] = Convert.ToString(reader["BRAND"]);
+                        dataRow["StichQty"] = FormatPrintNumber(reader["STICH_QTY"]);
+                        dataRow["StichRate"] = FormatPrintNumber(reader["STICH_RATE"], "0.00");
+                        dataRow["StichAmt"] = FormatPrintNumber(reader["STICH_AMT"], "0.00");
+                        dataRow["NetAmount"] = FormatPrintNetAmount(reader["AMOUNT"], reader["STICH_AMT"]);
                         dataTable.Rows.Add(dataRow);
                     }
                     reader.Close();
@@ -603,9 +620,9 @@ namespace Empire_ERP.Infrastructure.Repositories
             {
                 "SerialID","CustomerName","ContactNo","SuitType","Design","Amount","OrderDate","DeliveryDate",
                 "KurtaLength","Shoulder","Sleeves","Chest","Waist","HipSize","CollarSize","Armhole","CuffMori",
-                "BottomType","BottomLength","Pancha","AsanGhera",
+                "BottomType","BottomStyle","BottomLength","Pancha","AsanGhera",
                 "DamanStyle","GalaStyle","PattiStyle","FrontPocket","SidePockets","FittingStyle",
-                "BottomPocket","Logo","ClothQty","ClothRate","Brand"
+                "BottomPocket","Logo","ClothQty","ClothRate","Brand","StichQty","StichRate","StichAmt","NetAmount"
             };
             foreach (string column in columns)
             {
@@ -625,9 +642,25 @@ namespace Empire_ERP.Infrastructure.Repositories
             return Convert.ToDouble(value).ToString(format, CultureInfo.InvariantCulture);
         }
 
+        private string FormatPrintNetAmount(object clothAmount, object stitchAmount)
+        {
+            double cloth = clothAmount == null || clothAmount == DBNull.Value ? 0 : Convert.ToDouble(clothAmount);
+            double stitch = stitchAmount == null || stitchAmount == DBNull.Value ? 0 : Convert.ToDouble(stitchAmount);
+            return (cloth + stitch).ToString("0.00", CultureInfo.InvariantCulture);
+        }
+
         private string FormatNumber(double? value)
         {
             return value == null ? "NULL" : Convert.ToString(value, CultureInfo.InvariantCulture);
+        }
+
+        private string FormatText(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return "NULL";
+            }
+            return "'" + value.Replace("'", "''") + "'";
         }
 
         private string FormatDate(DateTime? value)
@@ -638,6 +671,15 @@ namespace Empire_ERP.Infrastructure.Repositories
         private double? GetDouble(object value)
         {
             return value == null || value == DBNull.Value ? null : Convert.ToDouble(value);
+        }
+
+        private string GetText(object value)
+        {
+            if (value == null || value == DBNull.Value)
+            {
+                return "";
+            }
+            return Convert.ToString(value) ?? "";
         }
     }
 }

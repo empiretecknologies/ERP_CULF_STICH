@@ -73,8 +73,12 @@ var empr_StichingOrder = {
                 empr_StichingOrder.GeneratePrintReport();
             });
 
-            $('body').on('input', '#QTY, #RATE', function () {
+            $('body').on('input', '#QTY, #RATE, #STICH_QTY, #STICH_RATE', function () {
                 empr_StichingOrder.CalculateAmount();
+            });
+
+            $('body').on('input', '#BOTTOM_TYPE', function () {
+                empr_StichingOrder.UpdateBottomPocketLabel();
             });
 
             if (Permissions != "Admin") {
@@ -92,6 +96,10 @@ var empr_StichingOrder = {
         $("#QTY").val('');
         $("#RATE").val('');
         $("#AMOUNT").val('');
+        $("#STICH_QTY").val('');
+        $("#STICH_RATE").val('');
+        $("#STICH_AMT").val('');
+        $("#NET_AMOUNT").val('');
         $("#DEL_DATE").val('');
         empr_StichingOrder.ClearOrderFields();
         $('#BtnDelete').hide();
@@ -125,16 +133,27 @@ var empr_StichingOrder = {
         $("#QTY").val('');
         $("#RATE").val('');
         $("#AMOUNT").val('');
+        $("#STICH_QTY").val('');
+        $("#STICH_RATE").val('');
+        $("#STICH_AMT").val('');
+        $("#NET_AMOUNT").val('');
         $("#DEL_DATE").val('');
         empr_StichingOrder.SetBrandValue(null);
-        $('input[name="BOTTOM_TYPE"]').prop('checked', false);
-        $('input[name="BOTTOM_POCKET"]').prop('checked', false);
+        $("#BOTTOM_TYPE").val('');
+        $("#BOTTOM_STYLE").val('');
+        $("#BOTTOM_POCKET").val('');
+        $("#PATTI_STYLE").val('');
         $('input[name="DAMAN_STYLE"]').prop('checked', false);
         $('input[name="GALA_STYLE"]').prop('checked', false);
-        $('input[name="PATTI_STYLE"]').prop('checked', false);
         $('input[name="FRONT_POCKET"]').prop('checked', false);
         $('input[name="SIDE_POCKETS"]').prop('checked', false);
         $('input[name="FITTING_STYLE"]').prop('checked', false);
+        empr_StichingOrder.UpdateBottomPocketLabel();
+    },
+    UpdateBottomPocketLabel: function () {
+        var bottomType = ($("#BOTTOM_TYPE").val() || '').trim();
+        var label = bottomType ? (bottomType + ' Pocket:') : 'Pocket:';
+        $("#lblBOTTOM_POCKET").text(label);
     },
     ValidateForm: function () {
         var valid = true;
@@ -170,31 +189,35 @@ var empr_StichingOrder = {
             FULL_NAME: ($("#FULL_NAME").val() || '').trim(),
             CONTACT_NO: ($("#CONTACT_NO").val() || '').trim(),
             SUIT_TYPE: (suitTypeVal === undefined || suitTypeVal === null || suitTypeVal === '') ? '' : String(suitTypeVal),
-            KURTA_LENGTH: $("#KURTA_LENGTH").val(),
-            SHOULDER: $("#SHOULDER").val(),
-            SLEEVES: $("#SLEEVES").val(),
-            CHEST: $("#CHEST").val(),
-            WAIST: $("#WAIST").val(),
-            HIP_SIZE: $("#HIPSIZE").val(),
-            COLLAR_SIZE: $("#COLLAR_SIZE").val(),
-            ARMHOLE: $("#ARMHOLE").val(),
-            CUFF_MORI: $("#CUFF_MORI").val(),
-            BOTTOM_TYPE: $('input[name="BOTTOM_TYPE"]:checked').val() || '',
-            BOTTOM_LENGTH: $("#BOTTOM_LENGTH").val(),
-            PANCHA: $("#PANCHA").val(),
-            ASAN_GHERA: $("#ASAN_GHERA").val(),
+            KURTA_LENGTH: ($("#KURTA_LENGTH").val() || '').trim(),
+            SHOULDER: ($("#SHOULDER").val() || '').trim(),
+            SLEEVES: ($("#SLEEVES").val() || '').trim(),
+            CHEST: ($("#CHEST").val() || '').trim(),
+            WAIST: ($("#WAIST").val() || '').trim(),
+            HIP_SIZE: ($("#HIPSIZE").val() || '').trim(),
+            COLLAR_SIZE: ($("#COLLAR_SIZE").val() || '').trim(),
+            ARMHOLE: ($("#ARMHOLE").val() || '').trim(),
+            CUFF_MORI: ($("#CUFF_MORI").val() || '').trim(),
+            BOTTOM_TYPE: ($("#BOTTOM_TYPE").val() || '').trim(),
+            BOTTOM_STYLE: ($("#BOTTOM_STYLE").val() || '').trim(),
+            BOTTOM_LENGTH: ($("#BOTTOM_LENGTH").val() || '').trim(),
+            PANCHA: ($("#PANCHA").val() || '').trim(),
+            ASAN_GHERA: ($("#ASAN_GHERA").val() || '').trim(),
             DAMAN_STYLE: $('input[name="DAMAN_STYLE"]:checked').val() || '',
             GALA_STYLE: $('input[name="GALA_STYLE"]:checked').val() || '',
-            PATTI_STYLE: $('input[name="PATTI_STYLE"]:checked').val() || '',
+            PATTI_STYLE: ($("#PATTI_STYLE").val() || '').trim(),
             FRONT_POCKET: $('input[name="FRONT_POCKET"]:checked').val() || '',
             SIDE_POCKETS: $('input[name="SIDE_POCKETS"]:checked').val() || '',
             FITTING_STYLE: $('input[name="FITTING_STYLE"]:checked').val() || '',
-            BOTTOM_POCKET: $('input[name="BOTTOM_POCKET"]:checked').val() || '',
+            BOTTOM_POCKET: ($("#BOTTOM_POCKET").val() || '').trim(),
             LOGO: ($("#LOGO").val() || '').trim(),
             QTY: $("#QTY").val(),
             RATE: $("#RATE").val(),
             BRAND: empr_StichingOrder.GetBrandValue(),
             AMOUNT: $("#AMOUNT").val(),
+            STICH_QTY: $("#STICH_QTY").val(),
+            STICH_RATE: $("#STICH_RATE").val(),
+            STICH_AMT: $("#STICH_AMT").val(),
             DEL_DATE: $("#DEL_DATE").val() || null
         };
         return modelRecord;
@@ -338,33 +361,31 @@ var empr_StichingOrder = {
         $("#COLLAR_SIZE").val(record.collaR_SIZE ?? '');
         $("#ARMHOLE").val(record.armhole ?? '');
         $("#CUFF_MORI").val(record.cufF_MORI ?? '');
+        $("#BOTTOM_TYPE").val(record.bottoM_TYPE ?? '');
+        $("#BOTTOM_STYLE").val(record.bottoM_STYLE ?? '');
         $("#BOTTOM_LENGTH").val(record.bottoM_LENGTH ?? '');
         $("#PANCHA").val(record.pancha ?? '');
         $("#ASAN_GHERA").val(record.asaN_GHERA ?? '');
+        $("#BOTTOM_POCKET").val(record.bottoM_POCKET ?? '');
+        $("#PATTI_STYLE").val(record.pattI_STYLE ?? '');
         $("#LOGO").val(record.logo ?? '');
         $("#QTY").val(record.qty ?? '');
         $("#RATE").val(record.rate ?? '');
+        $("#STICH_QTY").val(record.sticH_QTY ?? '');
+        $("#STICH_RATE").val(record.sticH_RATE ?? '');
+        $("#STICH_AMT").val(record.sticH_AMT ?? '');
         $("#DEL_DATE").val(empr_StichingOrder.FormatDateInput(record.deL_DATE));
         empr_StichingOrder.SetBrandValue(record.brand);
-        $('input[name="BOTTOM_TYPE"]').prop('checked', false);
-        $('input[name="BOTTOM_POCKET"]').prop('checked', false);
         $('input[name="DAMAN_STYLE"]').prop('checked', false);
         $('input[name="GALA_STYLE"]').prop('checked', false);
-        $('input[name="PATTI_STYLE"]').prop('checked', false);
         $('input[name="FRONT_POCKET"]').prop('checked', false);
         $('input[name="SIDE_POCKETS"]').prop('checked', false);
         $('input[name="FITTING_STYLE"]').prop('checked', false);
-        if (record.bottoM_TYPE) {
-            $('input[name="BOTTOM_TYPE"][value="' + record.bottoM_TYPE + '"]').prop('checked', true);
-        }
         if (record.damaN_STYLE) {
             $('input[name="DAMAN_STYLE"][value="' + record.damaN_STYLE + '"]').prop('checked', true);
         }
         if (record.galA_STYLE) {
             $('input[name="GALA_STYLE"][value="' + record.galA_STYLE + '"]').prop('checked', true);
-        }
-        if (record.pattI_STYLE) {
-            $('input[name="PATTI_STYLE"][value="' + record.pattI_STYLE + '"]').prop('checked', true);
         }
         if (record.fronT_POCKET) {
             $('input[name="FRONT_POCKET"][value="' + record.fronT_POCKET + '"]').prop('checked', true);
@@ -375,9 +396,7 @@ var empr_StichingOrder = {
         if (record.fittinG_STYLE) {
             $('input[name="FITTING_STYLE"][value="' + record.fittinG_STYLE + '"]').prop('checked', true);
         }
-        if (record.bottoM_POCKET) {
-            $('input[name="BOTTOM_POCKET"][value="' + record.bottoM_POCKET + '"]').prop('checked', true);
-        }
+        empr_StichingOrder.UpdateBottomPocketLabel();
         empr_StichingOrder.CalculateAmount();
     },
     GetCustomerById: function (id) {
@@ -539,9 +558,26 @@ var empr_StichingOrder = {
         var amount = qty * rate;
         if (!qty && !rate) {
             $("#AMOUNT").val('');
+        } else {
+            $("#AMOUNT").val(amount.toFixed(2));
+        }
+
+        var stichQty = parseFloat($("#STICH_QTY").val()) || 0;
+        var stichRate = parseFloat($("#STICH_RATE").val()) || 0;
+        var stichAmt = stichQty * stichRate;
+        if (!stichQty && !stichRate) {
+            $("#STICH_AMT").val('');
+        } else {
+            $("#STICH_AMT").val(stichAmt.toFixed(2));
+        }
+
+        var clothAmt = parseFloat($("#AMOUNT").val()) || 0;
+        var stitchAmt = parseFloat($("#STICH_AMT").val()) || 0;
+        if (!clothAmt && !stitchAmt) {
+            $("#NET_AMOUNT").val('');
             return;
         }
-        $("#AMOUNT").val(amount.toFixed(2));
+        $("#NET_AMOUNT").val((clothAmt + stitchAmt).toFixed(2));
     },
     SetSuitTypeValue: function (val) {
         var instance = $('#SUIT_TYPE').dxSelectBox('instance');

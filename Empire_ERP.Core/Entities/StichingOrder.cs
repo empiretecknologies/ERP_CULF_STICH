@@ -10,19 +10,20 @@ namespace Empire_ERP.Core.Entities
         public string? FULL_NAME { get; set; }
         public string? CONTACT_NO { get; set; }
         public string? SUIT_TYPE { get; set; }
-        public double? KURTA_LENGTH { get; set; }
-        public double? SHOULDER { get; set; }
-        public double? SLEEVES { get; set; }
-        public double? CHEST { get; set; }
-        public double? WAIST { get; set; }
-        public double? HIP_SIZE { get; set; }
-        public double? COLLAR_SIZE { get; set; }
-        public double? ARMHOLE { get; set; }
-        public double? CUFF_MORI { get; set; }
+        public string? KURTA_LENGTH { get; set; }
+        public string? SHOULDER { get; set; }
+        public string? SLEEVES { get; set; }
+        public string? CHEST { get; set; }
+        public string? WAIST { get; set; }
+        public string? HIP_SIZE { get; set; }
+        public string? COLLAR_SIZE { get; set; }
+        public string? ARMHOLE { get; set; }
+        public string? CUFF_MORI { get; set; }
         public string? BOTTOM_TYPE { get; set; }
-        public double? BOTTOM_LENGTH { get; set; }
-        public double? PANCHA { get; set; }
-        public double? ASAN_GHERA { get; set; }
+        public string? BOTTOM_STYLE { get; set; }
+        public string? BOTTOM_LENGTH { get; set; }
+        public string? PANCHA { get; set; }
+        public string? ASAN_GHERA { get; set; }
         public string? DAMAN_STYLE { get; set; }
         public string? GALA_STYLE { get; set; }
         public string? PATTI_STYLE { get; set; }
@@ -35,6 +36,9 @@ namespace Empire_ERP.Core.Entities
         public double? RATE { get; set; }
         public string? BRAND { get; set; }
         public double? AMOUNT { get; set; }
+        public double? STICH_QTY { get; set; }
+        public double? STICH_RATE { get; set; }
+        public double? STICH_AMT { get; set; }
         public DateTime? DEL_DATE { get; set; }
         public string? ADD_USER_ID { get; set; }
         public DateTime? ADD_DATE { get; set; }
