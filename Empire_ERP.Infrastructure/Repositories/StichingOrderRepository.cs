@@ -239,6 +239,7 @@ namespace Empire_ERP.Infrastructure.Repositories
                 using (SqlConnection connection = new SqlConnection(new SQLService().getconnstring()))
                 {
                     string query = "SELECT TOP 1 C.ID,K.ID AS ORDER_ID,C.FULL_NAME,C.CONTACT_NO,K.CUSTOMER_ID," +
+                                   "K.REF,K.REMARKS," +
                                    "K.SUIT_TYPE,K.KURTA_LENGTH,K.SHOULDER,K.SLEEVES,K.CHEST,K.WAIST,K.HIP_SIZE," +
                                    "K.COLLAR_SIZE,K.ARMHOLE,K.CUFF_MORI,K.BOTTOM_TYPE,K.BOTTOM_STYLE,K.BOTTOM_LENGTH," +
                                    "K.PANCHA,K.ASAN_GHERA,K.DAMAN_STYLE,K.GALA_STYLE,K.PATTI_STYLE," +
@@ -264,6 +265,8 @@ namespace Empire_ERP.Infrastructure.Repositories
                             CUSTOMER_ID = reader["CUSTOMER_ID"] == DBNull.Value ? Convert.ToInt32(reader["ID"]) : Convert.ToInt32(reader["CUSTOMER_ID"]),
                             FULL_NAME = Convert.ToString(reader["FULL_NAME"]),
                             CONTACT_NO = Convert.ToString(reader["CONTACT_NO"]),
+                            REF = Convert.ToString(reader["REF"]),
+                            REMARKS = Convert.ToString(reader["REMARKS"]),
                             SUIT_TYPE = Convert.ToString(reader["SUIT_TYPE"]),
                             KURTA_LENGTH = GetText(reader["KURTA_LENGTH"]),
                             SHOULDER = GetText(reader["SHOULDER"]),
@@ -324,12 +327,31 @@ namespace Empire_ERP.Infrastructure.Repositories
 
         public MyHttpResponseMessage GetOrderById(int id, Common common)
         {
+            return GetOrderByFilter(common, "AND K.ID = '" + id + "'");
+        }
+
+        public MyHttpResponseMessage GetOrderByRef(string refNo, Common common)
+        {
+            if (string.IsNullOrWhiteSpace(refNo))
+            {
+                MyHttpResponseMessage emptyResponse = new MyHttpResponseMessage();
+                emptyResponse.msg = "Data not found in our records";
+                emptyResponse.msgType = 2;
+                return emptyResponse;
+            }
+            string safeRef = refNo.Replace("'", "''");
+            return GetOrderByFilter(common, "AND K.REF = '" + safeRef + "'");
+        }
+
+        private MyHttpResponseMessage GetOrderByFilter(Common common, string extraWhere)
+        {
             MyHttpResponseMessage response = new MyHttpResponseMessage();
             try
             {
                 using (SqlConnection connection = new SqlConnection(new SQLService().getconnstring()))
                 {
-                    string query = "SELECT K.ID AS ORDER_ID,C.ID,K.CUSTOMER_ID,C.FULL_NAME,C.CONTACT_NO," +
+                    string query = "SELECT TOP 1 K.ID AS ORDER_ID,C.ID,K.CUSTOMER_ID,C.FULL_NAME,C.CONTACT_NO," +
+                                   "K.REF,K.REMARKS," +
                                    "K.SUIT_TYPE,K.KURTA_LENGTH,K.SHOULDER,K.SLEEVES,K.CHEST,K.WAIST,K.HIP_SIZE," +
                                    "K.COLLAR_SIZE,K.ARMHOLE,K.CUFF_MORI,K.BOTTOM_TYPE,K.BOTTOM_STYLE,K.BOTTOM_LENGTH," +
                                    "K.PANCHA,K.ASAN_GHERA,K.DAMAN_STYLE,K.GALA_STYLE,K.PATTI_STYLE," +
@@ -337,7 +359,8 @@ namespace Empire_ERP.Infrastructure.Repositories
                                    "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.STICH_QTY,K.STICH_RATE,K.STICH_AMT,K.DEL_DATE " +
                                    "FROM TBL_KURTASHALWAR K " +
                                    "INNER JOIN TBL_WALKCUSTOMER C ON C.ID = K.CUSTOMER_ID AND C.DLT = 'T' " +
-                                   "WHERE K.MENU_ID = '" + common.MenuID + "' AND K.DLT = 'T' AND K.ID = '" + id + "'";
+                                   "WHERE K.MENU_ID = '" + common.MenuID + "' AND K.DLT = 'T' " + extraWhere +
+                                   " ORDER BY K.ID DESC";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     connection.Open();
@@ -351,6 +374,8 @@ namespace Empire_ERP.Infrastructure.Repositories
                             CUSTOMER_ID = reader["CUSTOMER_ID"] == DBNull.Value ? null : Convert.ToInt32(reader["CUSTOMER_ID"]),
                             FULL_NAME = Convert.ToString(reader["FULL_NAME"]),
                             CONTACT_NO = Convert.ToString(reader["CONTACT_NO"]),
+                            REF = Convert.ToString(reader["REF"]),
+                            REMARKS = Convert.ToString(reader["REMARKS"]),
                             SUIT_TYPE = Convert.ToString(reader["SUIT_TYPE"]),
                             KURTA_LENGTH = GetText(reader["KURTA_LENGTH"]),
                             SHOULDER = GetText(reader["SHOULDER"]),
@@ -452,14 +477,14 @@ namespace Empire_ERP.Infrastructure.Repositories
             return "INSERT INTO TBL_KURTASHALWAR " +
                    "(ID,CUSTOMER_ID,SUIT_TYPE,KURTA_LENGTH,SHOULDER,SLEEVES,CHEST,WAIST,HIP_SIZE,COLLAR_SIZE,ARMHOLE,CUFF_MORI," +
                    "BOTTOM_TYPE,BOTTOM_STYLE,BOTTOM_LENGTH,PANCHA,ASAN_GHERA,DAMAN_STYLE,GALA_STYLE,PATTI_STYLE," +
-                   "FRONT_POCKET,SIDE_POCKETS,FITTING_STYLE,BOTTOM_POCKET,LOGO,QTY,RATE,BRAND,AMOUNT,STICH_QTY,STICH_RATE,STICH_AMT,DEL_DATE,ADD_USER_ID,ADD_DATE," +
+                   "FRONT_POCKET,SIDE_POCKETS,FITTING_STYLE,BOTTOM_POCKET,LOGO,QTY,RATE,BRAND,AMOUNT,STICH_QTY,STICH_RATE,STICH_AMT,DEL_DATE,REF,REMARKS,ADD_USER_ID,ADD_DATE," +
                    "ADD_COMPUTER_NAME,ADD_IP_ADDRESS,EDIT_USER_ID,EDIT_DATE," +
                    "EDIT_COMPUTER_NAME,ADD_POSTALCODE,EDIT_POSTALCODE," +
                    "MENU_ID,DLT)" +
                    "VALUES" +
                    "('" + id + "','" + customerId + "','" + modelRecord.SUIT_TYPE + "'," + FormatText(modelRecord.KURTA_LENGTH) + "," + FormatText(modelRecord.SHOULDER) + "," + FormatText(modelRecord.SLEEVES) + "," + FormatText(modelRecord.CHEST) + "," + FormatText(modelRecord.WAIST) + "," + FormatText(modelRecord.HIP_SIZE) + "," + FormatText(modelRecord.COLLAR_SIZE) + "," + FormatText(modelRecord.ARMHOLE) + "," + FormatText(modelRecord.CUFF_MORI) + "," +
                    FormatText(modelRecord.BOTTOM_TYPE) + "," + FormatText(modelRecord.BOTTOM_STYLE) + "," + FormatText(modelRecord.BOTTOM_LENGTH) + "," + FormatText(modelRecord.PANCHA) + "," + FormatText(modelRecord.ASAN_GHERA) + ",'" + modelRecord.DAMAN_STYLE + "','" + modelRecord.GALA_STYLE + "'," + FormatText(modelRecord.PATTI_STYLE) + "," +
-                   "'" + modelRecord.FRONT_POCKET + "','" + modelRecord.SIDE_POCKETS + "','" + modelRecord.FITTING_STYLE + "'," + FormatText(modelRecord.BOTTOM_POCKET) + ",'" + modelRecord.LOGO + "'," + FormatNumber(modelRecord.QTY) + "," + FormatNumber(modelRecord.RATE) + ",'" + modelRecord.BRAND + "'," + FormatNumber(modelRecord.AMOUNT) + "," + FormatNumber(modelRecord.STICH_QTY) + "," + FormatNumber(modelRecord.STICH_RATE) + "," + FormatNumber(modelRecord.STICH_AMT) + "," + FormatDate(modelRecord.DEL_DATE) + ",'" + userid + "','" + CommonService.GetDateTime("Pakistan Standard Time") + "'," +
+                   "'" + modelRecord.FRONT_POCKET + "','" + modelRecord.SIDE_POCKETS + "','" + modelRecord.FITTING_STYLE + "'," + FormatText(modelRecord.BOTTOM_POCKET) + ",'" + modelRecord.LOGO + "'," + FormatNumber(modelRecord.QTY) + "," + FormatNumber(modelRecord.RATE) + ",'" + modelRecord.BRAND + "'," + FormatNumber(modelRecord.AMOUNT) + "," + FormatNumber(modelRecord.STICH_QTY) + "," + FormatNumber(modelRecord.STICH_RATE) + "," + FormatNumber(modelRecord.STICH_AMT) + "," + FormatDate(modelRecord.DEL_DATE) + "," + FormatText(modelRecord.REF) + "," + FormatText(modelRecord.REMARKS) + ",'" + userid + "','" + CommonService.GetDateTime("Pakistan Standard Time") + "'," +
                    "'" + Computer + "','" + Ip + "','" + userid + "','" + CommonService.GetDateTime("Pakistan Standard Time") + "'," +
                    "'" + Computer + "','" + Postal + "','" + Postal + "'," +
                    "'" + common.MenuID + "','T')";
@@ -499,6 +524,8 @@ namespace Empire_ERP.Infrastructure.Repositories
                     STICH_RATE = " + FormatNumber(modelRecord.STICH_RATE) + @",
                     STICH_AMT = " + FormatNumber(modelRecord.STICH_AMT) + @",
                     DEL_DATE = " + FormatDate(modelRecord.DEL_DATE) + @",
+                    REF = " + FormatText(modelRecord.REF) + @",
+                    REMARKS = " + FormatText(modelRecord.REMARKS) + @",
                     EDIT_USER_ID = '" + userid + @"',
                     EDIT_DATE = '" + CommonService.GetDateTime("Pakistan Standard Time") + @"',
                     EDIT_COMPUTER_NAME = '" + Computer + @"',

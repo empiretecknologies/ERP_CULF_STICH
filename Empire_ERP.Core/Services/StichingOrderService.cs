@@ -48,6 +48,11 @@ namespace Empire_ERP.Core.Services
             return _stichingOrderRepository.GetOrderById(id, common);
         }
 
+        public MyHttpResponseMessage GetOrderByRef(string refNo, Common common)
+        {
+            return _stichingOrderRepository.GetOrderByRef(refNo, common);
+        }
+
         public MyHttpResponseMessage Delete(int id, Common common)
         {
             return _stichingOrderRepository.Delete(id, common);

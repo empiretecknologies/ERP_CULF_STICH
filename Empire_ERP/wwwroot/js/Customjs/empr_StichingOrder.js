@@ -31,6 +31,10 @@ var empr_StichingOrder = {
                 empr_StichingOrder.EnterCustomerByContact();
             });
 
+            $('body').on('click', '#BtnEnterRef', function () {
+                empr_StichingOrder.EnterCustomerByRef();
+            });
+
             $('body').on('keypress', '#ID', function (e) {
                 if (e.which === 13) {
                     e.preventDefault();
@@ -42,6 +46,13 @@ var empr_StichingOrder = {
                 if (e.which === 13) {
                     e.preventDefault();
                     $('#BtnEnterContact').click();
+                }
+            });
+
+            $('body').on('keypress', '#REF', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    $('#BtnEnterRef').click();
                 }
             });
 
@@ -93,6 +104,8 @@ var empr_StichingOrder = {
         $("#ID").val('');
         $("#FULL_NAME").val('');
         $("#CONTACT_NO").val('');
+        $("#REF").val('');
+        $("#REMARKS").val('');
         $("#QTY").val('');
         $("#RATE").val('');
         $("#AMOUNT").val('');
@@ -188,6 +201,8 @@ var empr_StichingOrder = {
             ORDER_ID: isNaN(orderId) || orderId <= 0 ? 0 : orderId,
             FULL_NAME: ($("#FULL_NAME").val() || '').trim(),
             CONTACT_NO: ($("#CONTACT_NO").val() || '').trim(),
+            REF: ($("#REF").val() || '').trim(),
+            REMARKS: ($("#REMARKS").val() || '').trim(),
             SUIT_TYPE: (suitTypeVal === undefined || suitTypeVal === null || suitTypeVal === '') ? '' : String(suitTypeVal),
             KURTA_LENGTH: ($("#KURTA_LENGTH").val() || '').trim(),
             SHOULDER: ($("#SHOULDER").val() || '').trim(),
@@ -329,11 +344,21 @@ var empr_StichingOrder = {
         }
         empr_StichingOrder.GetCustomerByContactNo(contactNo);
     },
+    EnterCustomerByRef: function () {
+        var refNo = ($("#REF").val() || '').trim();
+        if (refNo === '') {
+            empr_helper.notify("Please enter reference #.", 2);
+            return;
+        }
+        empr_StichingOrder.GetOrderByRef(refNo);
+    },
     BindCustomerLookup: function (record) {
         $("#ORDER_ID").val(empr_StichingOrder.GetRecordOrderId(record) || '');
         $("#ID").val(empr_StichingOrder.GetRecordId(record) || '');
         $("#FULL_NAME").val(record.fulL_NAME || '');
         $("#CONTACT_NO").val(record.contacT_NO || '');
+        $("#REF").val(record.ref || record.rEF || record.REF || '');
+        $("#REMARKS").val(record.remarks || record.rEMARKS || record.REMARKS || '');
         empr_StichingOrder.FillMeasurementFields(record);
         $('#BtnDelete').hide();
         if (Permissions != "Admin") {
@@ -417,6 +442,15 @@ var empr_StichingOrder = {
             }
         }, false, true);
     },
+    GetOrderByRef: function (refNo) {
+        ajaxHelper.ajaxGetJson('/StichingOrder/GetOrderByRef?refNo=' + encodeURIComponent(refNo), function (data) {
+            if (data.msgType == 1) {
+                empr_StichingOrder.BindCustomerLookup(data.data);
+            } else {
+                empr_helper.notify(data.msg, data.msgType);
+            }
+        }, false, true);
+    },
     GetOrderById: function (id) {
         ajaxHelper.ajaxGetJson('/StichingOrder/GetOrderById?id=' + id, function (data) {
             empr_StichingOrder.ResetForm();
@@ -426,6 +460,8 @@ var empr_StichingOrder = {
                 $("#ID").val(empr_StichingOrder.GetRecordId(record) || '');
                 $("#FULL_NAME").val(record.fulL_NAME || '');
                 $("#CONTACT_NO").val(record.contacT_NO || '');
+                $("#REF").val(record.ref || record.rEF || record.REF || '');
+                $("#REMARKS").val(record.remarks || record.rEMARKS || record.REMARKS || '');
                 empr_StichingOrder.FillMeasurementFields(record);
                 $('.modal').modal('hide');
                 if (Permissions != "Admin") {

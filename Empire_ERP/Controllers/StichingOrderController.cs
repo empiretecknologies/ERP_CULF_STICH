@@ -65,6 +65,13 @@ namespace Empire_ERP.Controllers
             return Json(data);
         }
 
+        [HttpGet]
+        public JsonResult GetOrderByRef(string refNo)
+        {
+            var data = _stichingOrderService.GetOrderByRef(refNo, CommonHelper.GetValues(HttpContext));
+            return Json(data);
+        }
+
         [HttpPost]
         public JsonResult Save(StichingOrder model)
         {

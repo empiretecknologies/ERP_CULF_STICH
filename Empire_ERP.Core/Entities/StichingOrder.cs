@@ -9,6 +9,8 @@ namespace Empire_ERP.Core.Entities
         public int? CUSTOMER_ID { get; set; }
         public string? FULL_NAME { get; set; }
         public string? CONTACT_NO { get; set; }
+        public string? REF { get; set; }
+        public string? REMARKS { get; set; }
         public string? SUIT_TYPE { get; set; }
         public string? KURTA_LENGTH { get; set; }
         public string? SHOULDER { get; set; }
