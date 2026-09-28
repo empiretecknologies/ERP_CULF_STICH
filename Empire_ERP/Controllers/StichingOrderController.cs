@@ -222,6 +222,7 @@ namespace Empire_ERP.Controllers
             table.Columns.Add("ContactNo", typeof(string));
             table.Columns.Add("SuitType", typeof(string));
             table.Columns.Add("Design", typeof(string));
+            table.Columns.Add("REF", typeof(string));
             table.Columns.Add("Amount", typeof(string));
             table.Columns.Add("OrderDate", typeof(string));
             table.Columns.Add("DeliveryDate", typeof(string));
@@ -254,6 +255,8 @@ namespace Empire_ERP.Controllers
             table.Columns.Add("StichRate", typeof(string));
             table.Columns.Add("StichAmt", typeof(string));
             table.Columns.Add("NetAmount", typeof(string));
+            table.Columns.Add("Advance", typeof(string));
+            table.Columns.Add("Balance", typeof(string));
             return table;
         }
     }

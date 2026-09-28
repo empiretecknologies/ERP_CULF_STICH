@@ -244,7 +244,7 @@ namespace Empire_ERP.Infrastructure.Repositories
                                    "K.COLLAR_SIZE,K.ARMHOLE,K.CUFF_MORI,K.BOTTOM_TYPE,K.BOTTOM_STYLE,K.BOTTOM_LENGTH," +
                                    "K.PANCHA,K.ASAN_GHERA,K.DAMAN_STYLE,K.GALA_STYLE,K.PATTI_STYLE," +
                                    "K.FRONT_POCKET,K.SIDE_POCKETS,K.FITTING_STYLE,K.BOTTOM_POCKET,K.LOGO," +
-                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.STICH_QTY,K.STICH_RATE,K.STICH_AMT,K.DEL_DATE " +
+                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.STICH_QTY,K.STICH_RATE,K.STICH_AMT,K.ADVANCE,K.DEL_DATE " +
                                    "FROM TBL_WALKCUSTOMER C " +
                                    "LEFT JOIN TBL_KURTASHALWAR K ON K.ID = (" +
                                    "SELECT TOP 1 K2.ID FROM TBL_KURTASHALWAR K2 " +
@@ -297,6 +297,7 @@ namespace Empire_ERP.Infrastructure.Repositories
                             STICH_QTY = GetDouble(reader["STICH_QTY"]),
                             STICH_RATE = GetDouble(reader["STICH_RATE"]),
                             STICH_AMT = GetDouble(reader["STICH_AMT"]),
+                            ADVANCE = GetDouble(reader["ADVANCE"]),
                             DEL_DATE = reader["DEL_DATE"] == DBNull.Value ? null : Convert.ToDateTime(reader["DEL_DATE"]),
                         };
 
@@ -356,7 +357,7 @@ namespace Empire_ERP.Infrastructure.Repositories
                                    "K.COLLAR_SIZE,K.ARMHOLE,K.CUFF_MORI,K.BOTTOM_TYPE,K.BOTTOM_STYLE,K.BOTTOM_LENGTH," +
                                    "K.PANCHA,K.ASAN_GHERA,K.DAMAN_STYLE,K.GALA_STYLE,K.PATTI_STYLE," +
                                    "K.FRONT_POCKET,K.SIDE_POCKETS,K.FITTING_STYLE,K.BOTTOM_POCKET,K.LOGO," +
-                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.STICH_QTY,K.STICH_RATE,K.STICH_AMT,K.DEL_DATE " +
+                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.STICH_QTY,K.STICH_RATE,K.STICH_AMT,K.ADVANCE,K.DEL_DATE " +
                                    "FROM TBL_KURTASHALWAR K " +
                                    "INNER JOIN TBL_WALKCUSTOMER C ON C.ID = K.CUSTOMER_ID AND C.DLT = 'T' " +
                                    "WHERE K.MENU_ID = '" + common.MenuID + "' AND K.DLT = 'T' " + extraWhere +
@@ -406,6 +407,7 @@ namespace Empire_ERP.Infrastructure.Repositories
                             STICH_QTY = GetDouble(reader["STICH_QTY"]),
                             STICH_RATE = GetDouble(reader["STICH_RATE"]),
                             STICH_AMT = GetDouble(reader["STICH_AMT"]),
+                            ADVANCE = GetDouble(reader["ADVANCE"]),
                             DEL_DATE = reader["DEL_DATE"] == DBNull.Value ? null : Convert.ToDateTime(reader["DEL_DATE"]),
                         };
 
@@ -477,14 +479,14 @@ namespace Empire_ERP.Infrastructure.Repositories
             return "INSERT INTO TBL_KURTASHALWAR " +
                    "(ID,CUSTOMER_ID,SUIT_TYPE,KURTA_LENGTH,SHOULDER,SLEEVES,CHEST,WAIST,HIP_SIZE,COLLAR_SIZE,ARMHOLE,CUFF_MORI," +
                    "BOTTOM_TYPE,BOTTOM_STYLE,BOTTOM_LENGTH,PANCHA,ASAN_GHERA,DAMAN_STYLE,GALA_STYLE,PATTI_STYLE," +
-                   "FRONT_POCKET,SIDE_POCKETS,FITTING_STYLE,BOTTOM_POCKET,LOGO,QTY,RATE,BRAND,AMOUNT,STICH_QTY,STICH_RATE,STICH_AMT,DEL_DATE,REF,REMARKS,ADD_USER_ID,ADD_DATE," +
+                   "FRONT_POCKET,SIDE_POCKETS,FITTING_STYLE,BOTTOM_POCKET,LOGO,QTY,RATE,BRAND,AMOUNT,STICH_QTY,STICH_RATE,STICH_AMT,ADVANCE,DEL_DATE,REF,REMARKS,ADD_USER_ID,ADD_DATE," +
                    "ADD_COMPUTER_NAME,ADD_IP_ADDRESS,EDIT_USER_ID,EDIT_DATE," +
                    "EDIT_COMPUTER_NAME,ADD_POSTALCODE,EDIT_POSTALCODE," +
                    "MENU_ID,DLT)" +
                    "VALUES" +
                    "('" + id + "','" + customerId + "','" + modelRecord.SUIT_TYPE + "'," + FormatText(modelRecord.KURTA_LENGTH) + "," + FormatText(modelRecord.SHOULDER) + "," + FormatText(modelRecord.SLEEVES) + "," + FormatText(modelRecord.CHEST) + "," + FormatText(modelRecord.WAIST) + "," + FormatText(modelRecord.HIP_SIZE) + "," + FormatText(modelRecord.COLLAR_SIZE) + "," + FormatText(modelRecord.ARMHOLE) + "," + FormatText(modelRecord.CUFF_MORI) + "," +
                    FormatText(modelRecord.BOTTOM_TYPE) + "," + FormatText(modelRecord.BOTTOM_STYLE) + "," + FormatText(modelRecord.BOTTOM_LENGTH) + "," + FormatText(modelRecord.PANCHA) + "," + FormatText(modelRecord.ASAN_GHERA) + ",'" + modelRecord.DAMAN_STYLE + "','" + modelRecord.GALA_STYLE + "'," + FormatText(modelRecord.PATTI_STYLE) + "," +
-                   "'" + modelRecord.FRONT_POCKET + "','" + modelRecord.SIDE_POCKETS + "','" + modelRecord.FITTING_STYLE + "'," + FormatText(modelRecord.BOTTOM_POCKET) + ",'" + modelRecord.LOGO + "'," + FormatNumber(modelRecord.QTY) + "," + FormatNumber(modelRecord.RATE) + ",'" + modelRecord.BRAND + "'," + FormatNumber(modelRecord.AMOUNT) + "," + FormatNumber(modelRecord.STICH_QTY) + "," + FormatNumber(modelRecord.STICH_RATE) + "," + FormatNumber(modelRecord.STICH_AMT) + "," + FormatDate(modelRecord.DEL_DATE) + "," + FormatText(modelRecord.REF) + "," + FormatText(modelRecord.REMARKS) + ",'" + userid + "','" + CommonService.GetDateTime("Pakistan Standard Time") + "'," +
+                   "'" + modelRecord.FRONT_POCKET + "','" + modelRecord.SIDE_POCKETS + "','" + modelRecord.FITTING_STYLE + "'," + FormatText(modelRecord.BOTTOM_POCKET) + ",'" + modelRecord.LOGO + "'," + FormatNumber(modelRecord.QTY) + "," + FormatNumber(modelRecord.RATE) + ",'" + modelRecord.BRAND + "'," + FormatNumber(modelRecord.AMOUNT) + "," + FormatNumber(modelRecord.STICH_QTY) + "," + FormatNumber(modelRecord.STICH_RATE) + "," + FormatNumber(modelRecord.STICH_AMT) + "," + FormatNumber(modelRecord.ADVANCE) + "," + FormatDate(modelRecord.DEL_DATE) + "," + FormatText(modelRecord.REF) + "," + FormatText(modelRecord.REMARKS) + ",'" + userid + "','" + CommonService.GetDateTime("Pakistan Standard Time") + "'," +
                    "'" + Computer + "','" + Ip + "','" + userid + "','" + CommonService.GetDateTime("Pakistan Standard Time") + "'," +
                    "'" + Computer + "','" + Postal + "','" + Postal + "'," +
                    "'" + common.MenuID + "','T')";
@@ -523,6 +525,7 @@ namespace Empire_ERP.Infrastructure.Repositories
                     STICH_QTY = " + FormatNumber(modelRecord.STICH_QTY) + @",
                     STICH_RATE = " + FormatNumber(modelRecord.STICH_RATE) + @",
                     STICH_AMT = " + FormatNumber(modelRecord.STICH_AMT) + @",
+                    ADVANCE = " + FormatNumber(modelRecord.ADVANCE) + @",
                     DEL_DATE = " + FormatDate(modelRecord.DEL_DATE) + @",
                     REF = " + FormatText(modelRecord.REF) + @",
                     REMARKS = " + FormatText(modelRecord.REMARKS) + @",
@@ -561,7 +564,7 @@ namespace Empire_ERP.Infrastructure.Repositories
                                    "K.COLLAR_SIZE,K.ARMHOLE,K.CUFF_MORI,K.BOTTOM_TYPE,K.BOTTOM_STYLE,K.BOTTOM_LENGTH," +
                                    "K.PANCHA,K.ASAN_GHERA,K.DAMAN_STYLE,K.GALA_STYLE,K.PATTI_STYLE," +
                                    "K.FRONT_POCKET,K.SIDE_POCKETS,K.FITTING_STYLE,K.BOTTOM_POCKET,K.LOGO," +
-                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.STICH_QTY,K.STICH_RATE,K.STICH_AMT,K.DEL_DATE,K.ADD_DATE " +
+                                   "K.QTY,K.RATE,K.BRAND,K.AMOUNT,K.STICH_QTY,K.STICH_RATE,K.STICH_AMT,K.ADVANCE,K.DEL_DATE,K.ADD_DATE,K.REF " +
                                    "FROM TBL_KURTASHALWAR K " +
                                    "INNER JOIN TBL_WALKCUSTOMER C ON C.ID = K.CUSTOMER_ID AND C.DLT = 'T' " +
                                    "LEFT OUTER JOIN TBL_SUITTYPE ST ON CONVERT(VARCHAR, ST.GROUP_CODE) = K.SUIT_TYPE " +
@@ -578,6 +581,7 @@ namespace Empire_ERP.Infrastructure.Repositories
                         dataRow["ContactNo"] = Convert.ToString(reader["CONTACT_NO"]);
                         dataRow["SuitType"] = Convert.ToString(reader["SUIT_TYPE"]);
                         dataRow["Design"] = Convert.ToString(reader["FITTING_STYLE"]);
+                        dataRow["REF"] = Convert.ToString(reader["REF"]);
                         dataRow["Amount"] = FormatPrintNumber(reader["AMOUNT"], "0.00");
                         dataRow["OrderDate"] = reader["ADD_DATE"] == DBNull.Value ? "" : Convert.ToDateTime(reader["ADD_DATE"]).ToString("dd-MM-yyyy");
                         dataRow["DeliveryDate"] = reader["DEL_DATE"] == DBNull.Value ? "" : Convert.ToDateTime(reader["DEL_DATE"]).ToString("dd-MM-yyyy");
@@ -610,6 +614,8 @@ namespace Empire_ERP.Infrastructure.Repositories
                         dataRow["StichRate"] = FormatPrintNumber(reader["STICH_RATE"], "0.00");
                         dataRow["StichAmt"] = FormatPrintNumber(reader["STICH_AMT"], "0.00");
                         dataRow["NetAmount"] = FormatPrintNetAmount(reader["AMOUNT"], reader["STICH_AMT"]);
+                        dataRow["Advance"] = FormatPrintNumber(reader["ADVANCE"], "0.00");
+                        dataRow["Balance"] = FormatPrintBalance(reader["AMOUNT"], reader["STICH_AMT"], reader["ADVANCE"]);
                         dataTable.Rows.Add(dataRow);
                     }
                     reader.Close();
@@ -645,11 +651,11 @@ namespace Empire_ERP.Infrastructure.Repositories
         {
             string[] columns = new string[]
             {
-                "SerialID","CustomerName","ContactNo","SuitType","Design","Amount","OrderDate","DeliveryDate",
+                "SerialID","CustomerName","ContactNo","SuitType","Design","REF","Amount","OrderDate","DeliveryDate",
                 "KurtaLength","Shoulder","Sleeves","Chest","Waist","HipSize","CollarSize","Armhole","CuffMori",
                 "BottomType","BottomStyle","BottomLength","Pancha","AsanGhera",
                 "DamanStyle","GalaStyle","PattiStyle","FrontPocket","SidePockets","FittingStyle",
-                "BottomPocket","Logo","ClothQty","ClothRate","Brand","StichQty","StichRate","StichAmt","NetAmount"
+                "BottomPocket","Logo","ClothQty","ClothRate","Brand","StichQty","StichRate","StichAmt","NetAmount","Advance","Balance"
             };
             foreach (string column in columns)
             {
@@ -674,6 +680,14 @@ namespace Empire_ERP.Infrastructure.Repositories
             double cloth = clothAmount == null || clothAmount == DBNull.Value ? 0 : Convert.ToDouble(clothAmount);
             double stitch = stitchAmount == null || stitchAmount == DBNull.Value ? 0 : Convert.ToDouble(stitchAmount);
             return (cloth + stitch).ToString("0.00", CultureInfo.InvariantCulture);
+        }
+
+        private string FormatPrintBalance(object clothAmount, object stitchAmount, object advanceAmount)
+        {
+            double cloth = clothAmount == null || clothAmount == DBNull.Value ? 0 : Convert.ToDouble(clothAmount);
+            double stitch = stitchAmount == null || stitchAmount == DBNull.Value ? 0 : Convert.ToDouble(stitchAmount);
+            double advance = advanceAmount == null || advanceAmount == DBNull.Value ? 0 : Convert.ToDouble(advanceAmount);
+            return ((cloth + stitch) - advance).ToString("0.00", CultureInfo.InvariantCulture);
         }
 
         private string FormatNumber(double? value)

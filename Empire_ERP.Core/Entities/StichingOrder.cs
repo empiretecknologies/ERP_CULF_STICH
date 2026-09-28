@@ -41,6 +41,7 @@ namespace Empire_ERP.Core.Entities
         public double? STICH_QTY { get; set; }
         public double? STICH_RATE { get; set; }
         public double? STICH_AMT { get; set; }
+        public double? ADVANCE { get; set; }
         public DateTime? DEL_DATE { get; set; }
         public string? ADD_USER_ID { get; set; }
         public DateTime? ADD_DATE { get; set; }

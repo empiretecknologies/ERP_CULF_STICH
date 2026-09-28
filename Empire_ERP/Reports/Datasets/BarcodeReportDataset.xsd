@@ -403,6 +403,7 @@
               <xs:element name="ContactNo" type="xs:string" minOccurs="0" />
               <xs:element name="SuitType" type="xs:string" minOccurs="0" />
               <xs:element name="Design" type="xs:string" minOccurs="0" />
+              <xs:element name="REF" type="xs:string" minOccurs="0" />
               <xs:element name="Amount" type="xs:string" minOccurs="0" />
               <xs:element name="OrderDate" type="xs:string" minOccurs="0" />
               <xs:element name="DeliveryDate" type="xs:string" minOccurs="0" />
@@ -435,6 +436,8 @@
               <xs:element name="StichRate" type="xs:string" minOccurs="0" />
               <xs:element name="StichAmt" type="xs:string" minOccurs="0" />
               <xs:element name="NetAmount" type="xs:string" minOccurs="0" />
+              <xs:element name="Advance" type="xs:string" minOccurs="0" />
+              <xs:element name="Balance" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

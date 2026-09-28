@@ -84,7 +84,7 @@ var empr_StichingOrder = {
                 empr_StichingOrder.GeneratePrintReport();
             });
 
-            $('body').on('input', '#QTY, #RATE, #STICH_QTY, #STICH_RATE', function () {
+            $('body').on('input', '#QTY, #RATE, #STICH_QTY, #STICH_RATE, #ADVANCE', function () {
                 empr_StichingOrder.CalculateAmount();
             });
 
@@ -113,6 +113,8 @@ var empr_StichingOrder = {
         $("#STICH_RATE").val('');
         $("#STICH_AMT").val('');
         $("#NET_AMOUNT").val('');
+        $("#ADVANCE").val('');
+        $("#BALANCE").val('');
         $("#DEL_DATE").val('');
         empr_StichingOrder.ClearOrderFields();
         $('#BtnDelete').hide();
@@ -150,6 +152,8 @@ var empr_StichingOrder = {
         $("#STICH_RATE").val('');
         $("#STICH_AMT").val('');
         $("#NET_AMOUNT").val('');
+        $("#ADVANCE").val('');
+        $("#BALANCE").val('');
         $("#DEL_DATE").val('');
         empr_StichingOrder.SetBrandValue(null);
         $("#BOTTOM_TYPE").val('');
@@ -233,6 +237,7 @@ var empr_StichingOrder = {
             STICH_QTY: $("#STICH_QTY").val(),
             STICH_RATE: $("#STICH_RATE").val(),
             STICH_AMT: $("#STICH_AMT").val(),
+            ADVANCE: $("#ADVANCE").val(),
             DEL_DATE: $("#DEL_DATE").val() || null
         };
         return modelRecord;
@@ -399,6 +404,7 @@ var empr_StichingOrder = {
         $("#STICH_QTY").val(record.sticH_QTY ?? '');
         $("#STICH_RATE").val(record.sticH_RATE ?? '');
         $("#STICH_AMT").val(record.sticH_AMT ?? '');
+        $("#ADVANCE").val(record.advance ?? record.aDVANCE ?? record.ADVANCE ?? '');
         $("#DEL_DATE").val(empr_StichingOrder.FormatDateInput(record.deL_DATE));
         empr_StichingOrder.SetBrandValue(record.brand);
         $('input[name="DAMAN_STYLE"]').prop('checked', false);
@@ -609,11 +615,23 @@ var empr_StichingOrder = {
 
         var clothAmt = parseFloat($("#AMOUNT").val()) || 0;
         var stitchAmt = parseFloat($("#STICH_AMT").val()) || 0;
+        var netAmount = clothAmt + stitchAmt;
         if (!clothAmt && !stitchAmt) {
             $("#NET_AMOUNT").val('');
+        } else {
+            $("#NET_AMOUNT").val(netAmount.toFixed(2));
+        }
+
+        var advance = parseFloat($("#ADVANCE").val());
+        if (isNaN(advance)) {
+            advance = 0;
+        }
+        var hasNetOrAdvance = !!($("#NET_AMOUNT").val() || ($("#ADVANCE").val() || '').trim() !== '');
+        if (!hasNetOrAdvance) {
+            $("#BALANCE").val('');
             return;
         }
-        $("#NET_AMOUNT").val((clothAmt + stitchAmt).toFixed(2));
+        $("#BALANCE").val((netAmount - advance).toFixed(2));
     },
     SetSuitTypeValue: function (val) {
         var instance = $('#SUIT_TYPE').dxSelectBox('instance');
